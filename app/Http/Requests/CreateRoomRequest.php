@@ -24,7 +24,7 @@ class CreateRoomRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|min:3',
+            'name' => 'required|min:3|unique:rooms,name',
             'price' => 'required|numeric',
             'amount_guests'  => 'required|numeric',
             'comfort_level' => 'required|string',

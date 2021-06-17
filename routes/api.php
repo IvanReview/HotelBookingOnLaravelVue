@@ -36,7 +36,6 @@ Route::group(['prefix' => 'auth'], function ($router) {
         /*Route::post('/booking-final', [BookingController::class, 'createBooking']);*/
         Route::get('/rooms-all', [RoomsController::class, 'getAllRooms']);
 
-
     });
 
 

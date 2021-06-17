@@ -20,4 +20,12 @@ class Room extends Model
 
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function galleryImages()
+    {
+        return  $this->hasMany(Gallery::class);
+    }
+
 }

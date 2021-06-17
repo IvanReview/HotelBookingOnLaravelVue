@@ -23,13 +23,34 @@ class BookingController extends Controller
     {
         $status = $request->input('status');
 
-        if ( $status === "0") {
-            // status - скоуп
-            $bookingData = Booking::status($status)->get();
-            return response()->json($bookingData);
+        $itemOnPage = $request->items_on_page ? $request->items_on_page : 8;
+
+        $bookingQuery = Booking::with(['room', 'guest']);
+        if($request->filled('sort_params')){
+            switch ($request->sort_params){
+                case 0:
+                    $bookingQuery->orderBy('created_at', 'DESC');
+                    break;
+                case 1:
+                    $bookingQuery->orderBy('created_at', 'ASC');
+                    break;
+                case 2:
+                    $bookingQuery->orderBy('status', 'DESC');
+                    break;
+                case 3:
+                    $bookingQuery->orderBy('status', 'ASC');
+                    break;
+            }
+
         }
 
-        $bookingData = Booking::with(['room', 'guest'])->get();
+        /*if ( $status === "0") {
+            // status - скоуп
+            $bookingData = Booking::status()->get();
+            return response()->json($bookingData);
+        }*/
+
+        $bookingData = $bookingQuery->orderBy('created_at', 'DESC')->paginate($itemOnPage);
         return response()->json($bookingData);
 
     }

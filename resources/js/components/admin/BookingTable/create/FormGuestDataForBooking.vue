@@ -111,12 +111,16 @@ export default {
     props: {
         room: {
             type: Object,
-            default: {},
+            default: function () {
+                return {}
+            },
         },
 
         bookingData: {
             type: Object,
-            default: {}
+            default: function () {
+                return {}
+            },
         }
 
     },

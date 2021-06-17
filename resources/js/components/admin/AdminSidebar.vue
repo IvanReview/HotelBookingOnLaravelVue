@@ -146,11 +146,12 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'getBookingDataStatus'
+            'getBookingDataStatus',
+            'getBookingData'
         ]),
 
         new_booking() {
-            let a = this.getBookingDataStatus.filter(item => item.status == 0).length
+            let a = this.getBookingData.filter(item => item.status == 0).length
 
             return a
         }
@@ -164,8 +165,7 @@ export default {
         ])
     },
     mounted() {
-        this.getMainTableData(0)
-
+        /*this.getMainTableData(0)*/
 
     }
 

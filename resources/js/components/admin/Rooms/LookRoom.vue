@@ -123,33 +123,22 @@
                         </v-list-item>
                         <v-list-item>
                             <v-list-item-content>
-                                <v-col
-                                    v-for="n in 9"
-                                    :key="n"
-                                    class="d-flex child-flex"
-                                    cols="4"
-                                >
+                                <v-row >
+                                    <p v-if="!room.gallery_images.length"> Изображения отсутствуют!</p>
 
-                                    <v-img
-                                        :src="`https://picsum.photos/500/300?image=${n * 5 + 10}`"
-                                        :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
-                                        aspect-ratio="1"
-                                        class="grey lighten-2"
+                                    <v-col
+                                        v-else
+                                        v-for="image in room.gallery_images"
+                                        :key="image.id"
+                                        class="d-flex child-flex"
+                                        cols="4"
                                     >
-                                        <template v-slot:placeholder>
-                                            <v-row
-                                                class="fill-height ma-0"
-                                                align="center"
-                                                justify="center"
-                                            >
-                                                <v-progress-circular
-                                                    indeterminate
-                                                    color="grey lighten-5"
-                                                ></v-progress-circular>
-                                            </v-row>
-                                        </template>
-                                    </v-img>
-                                </v-col>
+                                        <img :src="`/storage/${image.name}`"
+                                             class="grey lighten-2"
+                                             :lazy-src="`/storage/${image.name}`"
+                                        >
+                                    </v-col>
+                                </v-row>
                             </v-list-item-content>
                         </v-list-item>
                     </v-card>
@@ -169,8 +158,13 @@ export default {
     props: {
         room: {
             type: Object,
-            default: {}
+            default: function () {
+                return {}
+            },
         },
+    },
+    mounted() {
+
     }
 }
 </script>

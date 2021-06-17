@@ -30,9 +30,9 @@ class AuthController extends Controller
         $user->password =  bcrypt($request->password);
 
         if ($user->save()){
-            return response()->json(['message'=>'Пользователь создан успешно!'],201);
+            return response()->json(['message'=>'Пользователь создан успешно!'], 201);
         } else{
-            return response()->json(['message'=>'Ошибка при создании пользователя!'],500);
+            return response()->json(['message'=>'Ошибка при создании пользователя!'], 500);
         }
     }
 
@@ -62,8 +62,8 @@ class AuthController extends Controller
             'access_token'  =>  $token,
             'token_type'    =>  'Bearer',
         ],200);
-
     }
+
 
     public function logout(Request $request)
     {

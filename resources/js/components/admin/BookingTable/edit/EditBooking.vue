@@ -248,7 +248,9 @@ export default {
     props: {
         booking_data: {
             type: Object,
-            default: {},
+            default: function () {
+                return {}
+            },
         }
     },
     computed: {
@@ -288,6 +290,11 @@ export default {
                     this.dialog = false
                     this.$toasted.show('Данные обновленны!!!',{
                         position: "bottom-left",
+                    })
+                } else {
+                    this.$toasted.show('Данные не корректны!!!',{
+                        type : 'error',
+                        position: "bottom-right",
                     })
                 }
             })

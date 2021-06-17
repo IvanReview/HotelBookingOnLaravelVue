@@ -180,7 +180,9 @@ export default {
     props: {
         booking: {
             type: Object,
-            default: {},
+            default: function () {
+                return {}
+            },
         },
     },
 }

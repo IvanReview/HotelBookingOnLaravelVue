@@ -341,9 +341,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     }
   },
-  computed: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)(['getBookingDataStatus'])), {}, {
+  computed: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)(['getBookingDataStatus', 'getBookingData'])), {}, {
     new_booking: function new_booking() {
-      var a = this.getBookingDataStatus.filter(function (item) {
+      var a = this.getBookingData.filter(function (item) {
         return item.status == 0;
       }).length;
       return a;
@@ -354,7 +354,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   methods: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)(['getMainTableData'])),
   mounted: function mounted() {
-    this.getMainTableData(0);
+    /*this.getMainTableData(0)*/
   }
 });
 

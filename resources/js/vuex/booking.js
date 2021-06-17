@@ -33,16 +33,23 @@ export default {
 
         //Админка
         //данные брони для главной таблицы
-        async getMainTableData({commit}, status = null) {
+        async getMainTableData({commit}, {number_page, itemsOnPage, sortParams, status = null}) {
+
+            let page_url = number_page ? `/api/auth/booking?page=${number_page}` : '/api/auth/booking'
+
             try{
-                const response = await axios.get('/api/auth/booking', {
+                const response = await axios.get(page_url, {
                     params: {
-                        status: status
+                        status: status,
+                        items_on_page: itemsOnPage,
+                        sort_params: sortParams,
                     }
                 })
 
-                if (status === null) commit('set_booking', response.data)
+                if (status === null) commit('set_booking', response.data.data)
                     else commit('set_booking_status', response.data)
+
+                return response.data.last_page
 
             } catch (e) {
                 console.log(e)
@@ -101,6 +108,8 @@ export default {
                         console.log(error)
                         break;
                 }
+
+                return error.response
             }
         },
 

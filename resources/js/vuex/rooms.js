@@ -99,7 +99,6 @@ export default {
                     'Content-Type': 'multipart/form-data'
                 }})
                 .then(response => {
-
                     commit('set_update_room_data', response.data)
                     return 200
 

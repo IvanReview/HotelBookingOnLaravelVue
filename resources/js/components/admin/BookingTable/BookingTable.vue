@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="main-table">
         <h1 class=" text-center">Главная таблица с данными</h1>
 
         <v-card class="mx-auto my-4" outlined>
@@ -22,6 +22,36 @@
         </v-card>
 
         <v-divider></v-divider>
+
+        <v-row>
+            <v-col
+                class="d-flex"
+                cols="6"
+                sm="4"
+            >
+                <v-select
+                    :items="[8, 10, 25, 50]"
+                    label="Количество Элементов на стр."
+                    v-model="itemsOnPage"
+                    v-on:change="getBooking"
+                ></v-select>
+            </v-col>
+
+            <v-col
+                class="d-flex"
+                cols="6"
+                sm="4"
+            >
+                <v-select
+                    :items="items"
+                    label="Сортировка"
+                    v-model="sortParams"
+                    v-on:change="getBooking"
+                    item-value="id"
+                    item-text="name"
+                ></v-select>
+            </v-col>
+        </v-row>
 
         <br>
         <v-simple-table dark>
@@ -67,8 +97,8 @@
         </v-simple-table>
 
         <!--Пагинация-->
-        <!--<template >
-            <div class="pagination_rooms text-center">
+        <template >
+            <div class="pagination text-center">
                 <v-pagination
                     v-model="page"
                     :length="last_page"
@@ -76,7 +106,7 @@
                     :total-visible="7"
                 ></v-pagination>
             </div>
-        </template>-->
+        </template>
     </div>
 
 </template>
@@ -95,9 +125,14 @@ export default {
             sound: true,
             widgets: false,
 
+            items: [
+                {id:0 ,name: 'По дате создания(по убыв.)'}, {id:1, name: 'По дате создания(по возр.)'},
+                {id:2, name: 'По статусу(Обраб)'}, {id:3, name: 'По статусу(Не Обраб)'}
+            ],
             page: 1,
             last_page: 0,
-            itemsOnPage: 5,
+            itemsOnPage: 8,
+            sortParams: 0,
         }
     },
     computed: {
@@ -105,13 +140,21 @@ export default {
             'getBookingData'
         ])
     },
+    watch: {
+        page() {
+            this.getBooking()
+        }
+    },
     methods: {
         ...mapActions([
             'getMainTableData'
         ]),
 
-        getData() {
-
+        getBooking() {
+            this.getMainTableData({ number_page: this.page,
+                    itemsOnPage: this.itemsOnPage,
+                    sortParams: this.sortParams })
+                .then(resp => this.last_page = resp)
         },
 
 
@@ -119,12 +162,17 @@ export default {
 
     mounted () {
 
-        this.getMainTableData()
+        this.getMainTableData({}).then(resp => this.last_page = resp)
     },
 
     }
 </script>
 
 <style scoped>
+    .main-table{
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
 
 </style>

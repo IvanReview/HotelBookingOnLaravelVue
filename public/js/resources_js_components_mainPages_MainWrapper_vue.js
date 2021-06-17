@@ -215,13 +215,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   watch: {
     //переключать дату выезда, чтобы она всега была на день больше даты заезда
     dateEnd: function dateEnd(val) {
-      if (val < this.dateStart) {
+      if (val <= this.dateStart) {
         var temp = new Date(this.dateStart);
         this.dateEnd = new Date(temp.getTime() + 86400000).toISOString().substr(0, 10);
       }
     },
     dateStart: function dateStart(val) {
-      if (val > this.dateEnd) {
+      if (val >= this.dateEnd) {
         var temp = new Date(this.dateStart);
         this.dateEnd = new Date(temp.getTime() + 86400000).toISOString().substr(0, 10);
       }

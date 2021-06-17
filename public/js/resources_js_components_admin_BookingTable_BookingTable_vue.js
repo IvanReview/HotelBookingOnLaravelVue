@@ -103,6 +103,36 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -118,17 +148,50 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       notifications: false,
       sound: true,
       widgets: false,
+      items: [{
+        id: 0,
+        name: 'По дате создания(по убыв.)'
+      }, {
+        id: 1,
+        name: 'По дате создания(по возр.)'
+      }, {
+        id: 2,
+        name: 'По статусу(Обраб)'
+      }, {
+        id: 3,
+        name: 'По статусу(Не Обраб)'
+      }],
       page: 1,
       last_page: 0,
-      itemsOnPage: 5
+      itemsOnPage: 8,
+      sortParams: 0
     };
   },
   computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapGetters)(['getBookingData'])),
+  watch: {
+    page: function page() {
+      this.getBooking();
+    }
+  },
   methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapActions)(['getMainTableData'])), {}, {
-    getData: function getData() {}
+    getBooking: function getBooking() {
+      var _this = this;
+
+      this.getMainTableData({
+        number_page: this.page,
+        itemsOnPage: this.itemsOnPage,
+        sortParams: this.sortParams
+      }).then(function (resp) {
+        return _this.last_page = resp;
+      });
+    }
   }),
   mounted: function mounted() {
-    this.getMainTableData();
+    var _this2 = this;
+
+    this.getMainTableData({}).then(function (resp) {
+      return _this2.last_page = resp;
+    });
   }
 });
 
@@ -403,7 +466,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   props: {
     book: {
       type: Object,
-      "default": {}
+      "default": function _default() {
+        return {};
+      }
     }
   },
   computed: {
@@ -710,11 +775,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   props: {
     room: {
       type: Object,
-      "default": {}
+      "default": function _default() {
+        return {};
+      }
     },
     bookingData: {
       type: Object,
-      "default": {}
+      "default": function _default() {
+        return {};
+      }
     }
   },
   computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)(['getErrorsBookingAdmin'])),
@@ -1018,7 +1087,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   props: {
     booking_data: {
       type: Object,
-      "default": {}
+      "default": function _default() {
+        return {};
+      }
     }
   },
   computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)(['getErrorsEditBookingAdmin'])),
@@ -1048,6 +1119,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
           _this.$toasted.show('Данные обновленны!!!', {
             position: "bottom-left"
+          });
+        } else {
+          _this.$toasted.show('Данные не корректны!!!', {
+            type: 'error',
+            position: "bottom-right"
           });
         }
       });
@@ -1254,7 +1330,9 @@ __webpack_require__.r(__webpack_exports__);
   props: {
     booking: {
       type: Object,
-      "default": {}
+      "default": function _default() {
+        return {};
+      }
     }
   }
 });
@@ -1497,6 +1575,30 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/admin/BookingTable/BookingTable.vue?vue&type=style&index=0&id=50010fd8&scoped=true&lang=css&":
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/admin/BookingTable/BookingTable.vue?vue&type=style&index=0&id=50010fd8&scoped=true&lang=css& ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
+// Imports
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "\n.main-table[data-v-50010fd8]{\n    display: flex;\n    flex-direction: column;\n    height: 100%;\n}\n\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/admin/BookingTable/SearchFormForAdmin.vue?vue&type=style&index=0&id=e208b7de&scoped=true&lang=css&":
 /*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/admin/BookingTable/SearchFormForAdmin.vue?vue&type=style&index=0&id=e208b7de&scoped=true&lang=css& ***!
@@ -1614,6 +1716,36 @@ ___CSS_LOADER_EXPORT___.push([module.id, "\n.loader[data-v-f03ce418]{\n    margi
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/admin/BookingTable/BookingTable.vue?vue&type=style&index=0&id=50010fd8&scoped=true&lang=css&":
+/*!**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/admin/BookingTable/BookingTable.vue?vue&type=style&index=0&id=50010fd8&scoped=true&lang=css& ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_BookingTable_vue_vue_type_style_index_0_id_50010fd8_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../../../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!../../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!../../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./BookingTable.vue?vue&type=style&index=0&id=50010fd8&scoped=true&lang=css& */ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/admin/BookingTable/BookingTable.vue?vue&type=style&index=0&id=50010fd8&scoped=true&lang=css&");
+
+            
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_BookingTable_vue_vue_type_style_index_0_id_50010fd8_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_1__.default, options);
+
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_BookingTable_vue_vue_type_style_index_0_id_50010fd8_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_1__.default.locals || {});
 
 /***/ }),
 
@@ -1780,15 +1912,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _BookingTable_vue_vue_type_template_id_50010fd8_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BookingTable.vue?vue&type=template&id=50010fd8&scoped=true& */ "./resources/js/components/admin/BookingTable/BookingTable.vue?vue&type=template&id=50010fd8&scoped=true&");
 /* harmony import */ var _BookingTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./BookingTable.vue?vue&type=script&lang=js& */ "./resources/js/components/admin/BookingTable/BookingTable.vue?vue&type=script&lang=js&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony import */ var _BookingTable_vue_vue_type_style_index_0_id_50010fd8_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./BookingTable.vue?vue&type=style&index=0&id=50010fd8&scoped=true&lang=css& */ "./resources/js/components/admin/BookingTable/BookingTable.vue?vue&type=style&index=0&id=50010fd8&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
+;
 
 
 /* normalize component */
-;
-var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__.default)(
+
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__.default)(
   _BookingTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__.default,
   _BookingTable_vue_vue_type_template_id_50010fd8_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render,
   _BookingTable_vue_vue_type_template_id_50010fd8_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
@@ -2272,6 +2406,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/admin/BookingTable/BookingTable.vue?vue&type=style&index=0&id=50010fd8&scoped=true&lang=css&":
+/*!******************************************************************************************************************************!*\
+  !*** ./resources/js/components/admin/BookingTable/BookingTable.vue?vue&type=style&index=0&id=50010fd8&scoped=true&lang=css& ***!
+  \******************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_BookingTable_vue_vue_type_style_index_0_id_50010fd8_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/style-loader/dist/cjs.js!../../../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!../../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!../../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./BookingTable.vue?vue&type=style&index=0&id=50010fd8&scoped=true&lang=css& */ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/admin/BookingTable/BookingTable.vue?vue&type=style&index=0&id=50010fd8&scoped=true&lang=css&");
+
+
+/***/ }),
+
 /***/ "./resources/js/components/admin/BookingTable/SearchFormForAdmin.vue?vue&type=style&index=0&id=e208b7de&scoped=true&lang=css&":
 /*!************************************************************************************************************************************!*\
   !*** ./resources/js/components/admin/BookingTable/SearchFormForAdmin.vue?vue&type=style&index=0&id=e208b7de&scoped=true&lang=css& ***!
@@ -2508,6 +2655,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
+    { staticClass: "main-table" },
     [
       _c("h1", { staticClass: " text-center" }, [
         _vm._v("Главная таблица с данными")
@@ -2546,6 +2694,58 @@ var render = function() {
       ),
       _vm._v(" "),
       _c("v-divider"),
+      _vm._v(" "),
+      _c(
+        "v-row",
+        [
+          _c(
+            "v-col",
+            { staticClass: "d-flex", attrs: { cols: "6", sm: "4" } },
+            [
+              _c("v-select", {
+                attrs: {
+                  items: [8, 10, 25, 50],
+                  label: "Количество Элементов на стр."
+                },
+                on: { change: _vm.getBooking },
+                model: {
+                  value: _vm.itemsOnPage,
+                  callback: function($$v) {
+                    _vm.itemsOnPage = $$v
+                  },
+                  expression: "itemsOnPage"
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "v-col",
+            { staticClass: "d-flex", attrs: { cols: "6", sm: "4" } },
+            [
+              _c("v-select", {
+                attrs: {
+                  items: _vm.items,
+                  label: "Сортировка",
+                  "item-value": "id",
+                  "item-text": "name"
+                },
+                on: { change: _vm.getBooking },
+                model: {
+                  value: _vm.sortParams,
+                  callback: function($$v) {
+                    _vm.sortParams = $$v
+                  },
+                  expression: "sortParams"
+                }
+              })
+            ],
+            1
+          )
+        ],
+        1
+      ),
       _vm._v(" "),
       _c("br"),
       _vm._v(" "),
@@ -2615,9 +2815,33 @@ var render = function() {
             proxy: true
           }
         ])
-      })
+      }),
+      _vm._v(" "),
+      [
+        _c(
+          "div",
+          { staticClass: "pagination text-center" },
+          [
+            _c("v-pagination", {
+              attrs: {
+                length: _vm.last_page,
+                color: "teal",
+                "total-visible": 7
+              },
+              model: {
+                value: _vm.page,
+                callback: function($$v) {
+                  _vm.page = $$v
+                },
+                expression: "page"
+              }
+            })
+          ],
+          1
+        )
+      ]
     ],
-    1
+    2
   )
 }
 var staticRenderFns = []

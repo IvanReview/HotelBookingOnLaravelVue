@@ -175,17 +175,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "CreateRoom",
   data: function data() {
     return {
-      dialog: false,
       room_create: {
         id: '',
         name: '',
@@ -193,8 +187,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         amount_guests: '',
         comfort_level: '',
         image: [],
-        image_gallery: []
+        gallery_images: []
       },
+      fileStore: [],
+      dialog: false,
       isLoading: false,
       alert: true,
       color: 'teal',
@@ -204,23 +200,31 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       errors: []
     };
   },
+  watch: {
+    fileStore: function fileStore() {
+      this.room_create.gallery_images = this.fileStore.filter(function (file) {
+        return file !== "undefined";
+      });
+    }
+  },
   computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)(['getRoomEditErrors'])),
   methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)(['createRoomInBd'])), {}, {
     //показать изображения галлереи после загрузки
     attachImageCreateRoomGallery: function attachImageCreateRoomGallery() {
-      var files = this.$refs.createRoomsGalleryImage.files;
-      var parentContainer = document.querySelector('.gallery_container');
+      var files = this.$refs.createRoomsGalleryImage.$refs.input.files;
+      var parentContainer = this.$refs.gallery_container_ref;
       var container = parentContainer.querySelectorAll('.empty_container'); //если количество файлов > количества контейнеров добавляем еще
 
       if (container.length < files.length) {
         for (var index = 0; index < files.length - container.length; index++) {
           var el = document.createElement('div');
-          el.classList.add('vg-dotted-square', 'vg-center', 'empty_container');
+          el.classList.add("d-flex", "child-flex", "col", "col-4", "empty_container");
           parentContainer.append(el);
         }
 
         container = parentContainer.querySelectorAll('.empty_container');
-      }
+      } //проходимся по массиву файлов и вызыв методы показа изображения и удаления
+
 
       for (var i in files) {
         if (files.hasOwnProperty(i)) {
@@ -239,7 +243,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       reader.onload = function (e) {
         //внутри контейнера создаем тег img
-        container.innerHTML = '<img class="img_item" style="width: 70px" src="">'; //вставляем в img файл
+        container.innerHTML = '<img class="image_item" src="">'; //вставляем в img файл
 
         container.querySelector('img').setAttribute('src', reader.result);
         container.classList.remove('empty_container');
@@ -254,8 +258,27 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         container.remove(); //и файл из переменной
 
         delete _this.fileStore[addElemId];
-        _this.productCreate.gallery_img = _this.fileStore.filter(function (file) {
-          return file !== "undefined";
+      });
+    },
+    //Добавить Изображение методом перетаскивания
+    dragAndDrop: function dragAndDrop(areaWhenDragFile, inputFileField) {
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function (eventName, index) {
+        areaWhenDragFile.addEventListener(eventName, function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          if (index < 2) {
+            areaWhenDragFile.style.background = '#2196f3';
+          } else {
+            areaWhenDragFile.style.background = '#1e1e1e';
+
+            if (index === 3) {
+              //dataTransfer хранит объекты перетаскиваемые мышью
+              inputFileField.files = e.dataTransfer.files; //вызвать событие передаем change, а при событии change срабатывает уже другая функц загрузки изобр
+
+              inputFileField.dispatchEvent(new Event('change'));
+            }
+          }
         });
       });
     },
@@ -269,6 +292,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       formData.append('amount_guests', this.room_create.amount_guests);
       formData.append('comfort_level', this.room_create.comfort_level);
       formData.append('image', this.room_create.image);
+      formData.append('gallery_img', this.room_create.gallery_images);
+      var key = 'gallery_img';
+      this.room_create.gallery_images.forEach(function (image, index) {
+        formData.append("".concat(key, "[").concat(index, "]"), image);
+      });
       this.createRoomInBd(formData).then(function (response) {
         if (response === 200) {
           _this2.dialog = false;
@@ -309,6 +337,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   }),
   mounted: function mounted() {
     this.room_data = Object.assign({}, this.room);
+  },
+  updated: function updated() {
+    var inputFileFieldGallery = this.$refs.createRoomsGalleryImage.$refs.input;
+    var areaWhenDragFile = this.$refs.gallery_container_ref;
+
+    if (inputFileFieldGallery && areaWhenDragFile) {
+      this.dragAndDrop(areaWhenDragFile, inputFileFieldGallery);
+    }
   }
 });
 
@@ -481,6 +517,21 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "EditRoom",
@@ -496,8 +547,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         price: '',
         amount_guests: '',
         comfort_level: '',
-        image: []
+        image: [],
+        gallery_images: []
       },
+      fileStore: [],
       isLoading: false,
       alert: true,
       color: 'teal',
@@ -507,10 +560,98 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       errors: []
     };
   },
+  watch: {},
   computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)(['getRoomEditErrors'])),
   methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)(['updateRoomInBd'])), {}, {
-    updateData: function updateData() {
+    //показать изображения галлереи после загрузки
+    attachImageUpdateRoomGallery: function attachImageUpdateRoomGallery() {
+      var files = this.$refs.updateRoomsGalleryImage.$refs.input.files;
+      var parentContainer = this.$refs.gallery_container_edit;
+      var container = parentContainer.querySelectorAll('.empty_container_edit'); //если количество файлов > количества контейнеров добавляем еще
+
+      if (container.length < files.length) {
+        for (var index = 0; index < files.length - container.length; index++) {
+          var el = document.createElement('div');
+          el.classList.add("d-flex", "child-flex", "col", "col-4", "empty_container_edit");
+          parentContainer.append(el);
+        }
+
+        container = parentContainer.querySelectorAll('.empty_container_edit');
+      } //проходимся по массиву файлов и вызыв методы показа изображения и удаления
+
+
+      for (var i in files) {
+        if (files.hasOwnProperty(i)) {
+          var addElemId = this.fileStore.push(files[i]) - 1;
+          this.showImageGallery(files[i], container[i]);
+          this.deleteDisplayImage(addElemId, container[i]);
+        }
+      }
+    },
+    //непосредственно отображение изображения галлереи
+    showImageGallery: function showImageGallery(file, container) {
+      var reader = new FileReader(); //содержимое контейнера удаляем
+
+      container.innerHTML = '';
+      reader.readAsDataURL(file);
+
+      reader.onload = function (e) {
+        //внутри контейнера создаем тег img
+        container.innerHTML = '<img class="image_item" src="">'; //вставляем в img файл
+
+        container.querySelector('img').setAttribute('src', reader.result);
+        container.classList.remove('empty_container_edit');
+      };
+    },
+    //удалить вновь добавленное изображение по клику
+    deleteDisplayImage: function deleteDisplayImage(addElemId, container) {
       var _this = this;
+
+      container.addEventListener('click', function () {
+        //сносим контаинер
+        container.remove(); //и файл из переменной
+
+        delete _this.fileStore[addElemId];
+      });
+    },
+    //удалить старое изображение по клику
+    deleteDisplayOldImage: function deleteDisplayOldImage(elemId) {
+      var container = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      this.room_data.gallery_images.splice(elemId, 1);
+    },
+    //Добавить Изображение методом перетаскивания
+    dragAndDrop: function dragAndDrop(areaWhenDragFile, inputFileField) {
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function (eventName, index) {
+        areaWhenDragFile.addEventListener(eventName, function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          if (index < 2) {
+            areaWhenDragFile.style.background = '#2196f3';
+          } else {
+            areaWhenDragFile.style.background = '#1e1e1e';
+
+            if (index === 3) {
+              //dataTransfer хранит объекты перетаскиваемые мышью
+              inputFileField.files = e.dataTransfer.files; //вызвать событие передаем change, а при событии change срабатывает уже другая функц загрузки изобр
+
+              inputFileField.dispatchEvent(new Event('change'));
+            }
+          }
+        });
+      });
+    },
+    //Обновить данные для номера
+    updateData: function updateData() {
+      var _this2 = this;
+
+      var file = this.fileStore.filter(function (item) {
+        return item !== 'undefined';
+      });
+      var old_image_id = this.room_data.gallery_images.map(function (item) {
+        return item.id;
+      });
+      var result_image_arr = file.concat(old_image_id); //сливаем новые изобр(файл) и старое(достат id)
 
       this.isLoading = 'orange';
       var formData = new FormData();
@@ -521,18 +662,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       formData.append('comfort_level', this.room_data.comfort_level);
       formData.append('image', this.room_data.image);
       formData.append('_method', "PUT");
+
+      if (result_image_arr.length) {
+        result_image_arr.forEach(function (image, index) {
+          formData.append('gallery_img'.concat("[", index, "]"), image);
+        });
+      }
+
       this.updateRoomInBd(formData).then(function (response) {
         if (response === 200) {
-          _this.dialog = false;
-          _this.isLoading = false;
-          _this.errors = [];
+          _this2.dialog = false;
+          _this2.isLoading = false;
+          _this2.errors = [];
         }
 
         if (response.status === 422) {
           switch (response.status) {
             case 422:
-              _this.errors = response.data.errors;
-              console.log(_this.errors);
+              _this2.errors = response.data.errors;
+              console.log(_this2.errors);
               break;
 
             default:
@@ -540,27 +688,34 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
               break;
           }
 
-          _this.snackbar = true;
-          _this.color = 'red';
-          _this.text = "Заолните правильно поля формы";
+          _this2.snackbar = true;
+          _this2.color = 'red';
+          _this2.text = "Заолните правильно поля формы";
         }
       });
     },
     attachImage: function attachImage(file) {
-      var _this2 = this;
+      var _this3 = this;
 
       if (file) {
         this.room_data.image = file;
         var reader = new FileReader();
         reader.readAsDataURL(file);
         reader.addEventListener('load', function () {
-          _this2.$refs.roomMainImage.src = reader.result;
+          _this3.$refs.roomMainImage.src = reader.result;
         });
       }
     }
   }),
   mounted: function mounted() {
     this.room_data = Object.assign({}, this.room);
+  },
+  updated: function updated() {
+    if (this.$refs.updateRoomsGalleryImage && this.$refs.gallery_container_edit) {
+      var inputFileFieldGallery = this.$refs.updateRoomsGalleryImage.$refs.input;
+      var areaWhenDragFile = this.$refs.gallery_container_edit;
+      this.dragAndDrop(areaWhenDragFile, inputFileFieldGallery);
+    }
   }
 });
 
@@ -731,25 +886,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "LookRoom",
   props: {
     room: {
       type: Object,
-      "default": {}
+      "default": function _default() {
+        return {};
+      }
     }
-  }
+  },
+  mounted: function mounted() {}
 });
 
 /***/ }),
@@ -841,9 +988,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _Room__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Room */ "./resources/js/components/admin/Rooms/Room.vue");
 /* harmony import */ var _CreateRoom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CreateRoom */ "./resources/js/components/admin/Rooms/CreateRoom.vue");
+/* harmony import */ var _loader_Loader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../loader/Loader */ "./resources/js/components/loader/Loader.vue");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -935,17 +1083,28 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Rooms",
   components: {
+    Loader: _loader_Loader__WEBPACK_IMPORTED_MODULE_2__.default,
     CreateRoom: _CreateRoom__WEBPACK_IMPORTED_MODULE_1__.default,
     Room: _Room__WEBPACK_IMPORTED_MODULE_0__.default
   },
   data: function data() {
     return {
+      loader: true,
       page: 1,
       last_page: 0,
       itemsOnPage: 5
@@ -956,8 +1115,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.paginateRooms();
     }
   },
-  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapGetters)(['getRoomsAdmin'])),
-  methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapActions)(['fetchRooms'])), {}, {
+  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_3__.mapGetters)(['getRoomsAdmin'])),
+  methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_3__.mapActions)(['fetchRooms'])), {}, {
     paginateRooms: function paginateRooms() {
       var _this = this;
 
@@ -967,20 +1126,70 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }).then(function (resp) {
         return _this.last_page = resp;
       });
-    },
-    createRoom: function createRoom() {},
-    openGuestCard: function openGuestCard() {},
-    editGuestCard: function editGuestCard() {}
+    }
   }),
   beforeCreate: function beforeCreate() {},
   mounted: function mounted() {
     var _this2 = this;
 
     this.fetchRooms({}).then(function (resp) {
-      return _this2.last_page = resp;
+      _this2.last_page = resp;
+      _this2.loader = false;
     });
   }
 });
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/loader/Loader.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/loader/Loader.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  name: "Loader"
+});
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/admin/Rooms/CreateRoom.vue?vue&type=style&index=0&id=59ac8f79&scoped=true&lang=css&":
+/*!*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/admin/Rooms/CreateRoom.vue?vue&type=style&index=0&id=59ac8f79&scoped=true&lang=css& ***!
+  \*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
+// Imports
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "\n.image_item[data-v-59ac8f79]{\n}\n\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
 
 /***/ }),
 
@@ -1005,6 +1214,60 @@ ___CSS_LOADER_EXPORT___.push([module.id, "\n.pagination_rooms{\n    margin-top: 
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/loader/Loader.vue?vue&type=style&index=0&id=f03ce418&scoped=true&lang=css&":
+/*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/loader/Loader.vue?vue&type=style&index=0&id=f03ce418&scoped=true&lang=css& ***!
+  \****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
+// Imports
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "\n.loader[data-v-f03ce418]{\n    margin: 30px;\n    width: 100%;\n    text-align: center;\n}\n\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/admin/Rooms/CreateRoom.vue?vue&type=style&index=0&id=59ac8f79&scoped=true&lang=css&":
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/admin/Rooms/CreateRoom.vue?vue&type=style&index=0&id=59ac8f79&scoped=true&lang=css& ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateRoom_vue_vue_type_style_index_0_id_59ac8f79_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../../../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!../../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!../../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./CreateRoom.vue?vue&type=style&index=0&id=59ac8f79&scoped=true&lang=css& */ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/admin/Rooms/CreateRoom.vue?vue&type=style&index=0&id=59ac8f79&scoped=true&lang=css&");
+
+            
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateRoom_vue_vue_type_style_index_0_id_59ac8f79_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_1__.default, options);
+
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateRoom_vue_vue_type_style_index_0_id_59ac8f79_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_1__.default.locals || {});
 
 /***/ }),
 
@@ -1038,6 +1301,36 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/loader/Loader.vue?vue&type=style&index=0&id=f03ce418&scoped=true&lang=css&":
+/*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/loader/Loader.vue?vue&type=style&index=0&id=f03ce418&scoped=true&lang=css& ***!
+  \********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Loader_vue_vue_type_style_index_0_id_f03ce418_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Loader.vue?vue&type=style&index=0&id=f03ce418&scoped=true&lang=css& */ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/loader/Loader.vue?vue&type=style&index=0&id=f03ce418&scoped=true&lang=css&");
+
+            
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Loader_vue_vue_type_style_index_0_id_f03ce418_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_1__.default, options);
+
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Loader_vue_vue_type_style_index_0_id_f03ce418_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_1__.default.locals || {});
+
+/***/ }),
+
 /***/ "./resources/js/components/admin/Rooms/CreateRoom.vue":
 /*!************************************************************!*\
   !*** ./resources/js/components/admin/Rooms/CreateRoom.vue ***!
@@ -1051,15 +1344,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _CreateRoom_vue_vue_type_template_id_59ac8f79_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CreateRoom.vue?vue&type=template&id=59ac8f79&scoped=true& */ "./resources/js/components/admin/Rooms/CreateRoom.vue?vue&type=template&id=59ac8f79&scoped=true&");
 /* harmony import */ var _CreateRoom_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CreateRoom.vue?vue&type=script&lang=js& */ "./resources/js/components/admin/Rooms/CreateRoom.vue?vue&type=script&lang=js&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony import */ var _CreateRoom_vue_vue_type_style_index_0_id_59ac8f79_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./CreateRoom.vue?vue&type=style&index=0&id=59ac8f79&scoped=true&lang=css& */ "./resources/js/components/admin/Rooms/CreateRoom.vue?vue&type=style&index=0&id=59ac8f79&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
+;
 
 
 /* normalize component */
-;
-var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__.default)(
+
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__.default)(
   _CreateRoom_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__.default,
   _CreateRoom_vue_vue_type_template_id_59ac8f79_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render,
   _CreateRoom_vue_vue_type_template_id_59ac8f79_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
@@ -1235,6 +1530,47 @@ component.options.__file = "resources/js/components/admin/Rooms/Rooms.vue"
 
 /***/ }),
 
+/***/ "./resources/js/components/loader/Loader.vue":
+/*!***************************************************!*\
+  !*** ./resources/js/components/loader/Loader.vue ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _Loader_vue_vue_type_template_id_f03ce418_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Loader.vue?vue&type=template&id=f03ce418&scoped=true& */ "./resources/js/components/loader/Loader.vue?vue&type=template&id=f03ce418&scoped=true&");
+/* harmony import */ var _Loader_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Loader.vue?vue&type=script&lang=js& */ "./resources/js/components/loader/Loader.vue?vue&type=script&lang=js&");
+/* harmony import */ var _Loader_vue_vue_type_style_index_0_id_f03ce418_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Loader.vue?vue&type=style&index=0&id=f03ce418&scoped=true&lang=css& */ "./resources/js/components/loader/Loader.vue?vue&type=style&index=0&id=f03ce418&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+;
+
+
+/* normalize component */
+
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__.default)(
+  _Loader_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__.default,
+  _Loader_vue_vue_type_template_id_f03ce418_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render,
+  _Loader_vue_vue_type_template_id_f03ce418_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  "f03ce418",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/loader/Loader.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
 /***/ "./resources/js/components/admin/Rooms/CreateRoom.vue?vue&type=script&lang=js&":
 /*!*************************************************************************************!*\
   !*** ./resources/js/components/admin/Rooms/CreateRoom.vue?vue&type=script&lang=js& ***!
@@ -1315,6 +1651,35 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/loader/Loader.vue?vue&type=script&lang=js&":
+/*!****************************************************************************!*\
+  !*** ./resources/js/components/loader/Loader.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Loader_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Loader.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/loader/Loader.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Loader_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/Rooms/CreateRoom.vue?vue&type=style&index=0&id=59ac8f79&scoped=true&lang=css&":
+/*!*********************************************************************************************************************!*\
+  !*** ./resources/js/components/admin/Rooms/CreateRoom.vue?vue&type=style&index=0&id=59ac8f79&scoped=true&lang=css& ***!
+  \*********************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateRoom_vue_vue_type_style_index_0_id_59ac8f79_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/style-loader/dist/cjs.js!../../../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!../../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!../../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./CreateRoom.vue?vue&type=style&index=0&id=59ac8f79&scoped=true&lang=css& */ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/admin/Rooms/CreateRoom.vue?vue&type=style&index=0&id=59ac8f79&scoped=true&lang=css&");
+
+
+/***/ }),
+
 /***/ "./resources/js/components/admin/Rooms/Rooms.vue?vue&type=style&index=0&lang=css&":
 /*!****************************************************************************************!*\
   !*** ./resources/js/components/admin/Rooms/Rooms.vue?vue&type=style&index=0&lang=css& ***!
@@ -1324,6 +1689,19 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Rooms_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/style-loader/dist/cjs.js!../../../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!../../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!../../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Rooms.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/admin/Rooms/Rooms.vue?vue&type=style&index=0&lang=css&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/loader/Loader.vue?vue&type=style&index=0&id=f03ce418&scoped=true&lang=css&":
+/*!************************************************************************************************************!*\
+  !*** ./resources/js/components/loader/Loader.vue?vue&type=style&index=0&id=f03ce418&scoped=true&lang=css& ***!
+  \************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Loader_vue_vue_type_style_index_0_id_f03ce418_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader/dist/cjs.js!../../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Loader.vue?vue&type=style&index=0&id=f03ce418&scoped=true&lang=css& */ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/loader/Loader.vue?vue&type=style&index=0&id=f03ce418&scoped=true&lang=css&");
 
 
 /***/ }),
@@ -1409,6 +1787,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Rooms_vue_vue_type_template_id_59f2fee6___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Rooms_vue_vue_type_template_id_59f2fee6___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Rooms.vue?vue&type=template&id=59f2fee6& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/admin/Rooms/Rooms.vue?vue&type=template&id=59f2fee6&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/loader/Loader.vue?vue&type=template&id=f03ce418&scoped=true&":
+/*!**********************************************************************************************!*\
+  !*** ./resources/js/components/loader/Loader.vue?vue&type=template&id=f03ce418&scoped=true& ***!
+  \**********************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Loader_vue_vue_type_template_id_f03ce418_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Loader_vue_vue_type_template_id_f03ce418_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Loader_vue_vue_type_template_id_f03ce418_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Loader.vue?vue&type=template&id=f03ce418&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/loader/Loader.vue?vue&type=template&id=f03ce418&scoped=true&");
 
 
 /***/ }),
@@ -1652,13 +2047,15 @@ var render = function() {
                                 [
                                   _c("v-file-input", {
                                     ref: "createRoomsGalleryImage",
+                                    staticClass: "file_image",
                                     attrs: {
                                       "show-size": "",
                                       label:
                                         "Загрузка изображений для галлереи",
                                       "prepend-icon": "mdi-camera",
                                       multiple: "",
-                                      "error-messages": _vm.errors.image_gallery
+                                      "error-messages":
+                                        _vm.errors.gallery_images
                                     },
                                     on: {
                                       change: function($event) {
@@ -1672,67 +2069,46 @@ var render = function() {
                                 1
                               ),
                               _vm._v(" "),
-                              _vm._l(9, function(n) {
-                                return _c(
-                                  "v-col",
-                                  {
-                                    key: n,
-                                    staticClass: "d-flex child-flex",
-                                    attrs: { cols: "4" }
-                                  },
-                                  [
-                                    _c("v-img", {
-                                      staticClass: "grey lighten-2",
-                                      attrs: {
-                                        src:
-                                          "https://picsum.photos/500/300?image=" +
-                                          (n * 5 + 10),
-                                        "lazy-src":
-                                          "https://picsum.photos/10/6?image=" +
-                                          (n * 5 + 10),
-                                        "aspect-ratio": "1"
-                                      },
-                                      scopedSlots: _vm._u(
+                              _c(
+                                "v-col",
+                                { attrs: { cols: "12" } },
+                                [
+                                  _c(
+                                    "v-row",
+                                    { ref: "gallery_container_ref" },
+                                    _vm._l(6, function(n) {
+                                      return _c(
+                                        "v-col",
+                                        {
+                                          key: n,
+                                          ref: "empty_container",
+                                          refInFor: true,
+                                          staticClass:
+                                            "d-flex child-flex empty_container",
+                                          attrs: { cols: "4" }
+                                        },
                                         [
-                                          {
-                                            key: "placeholder",
-                                            fn: function() {
-                                              return [
-                                                _c(
-                                                  "v-row",
-                                                  {
-                                                    staticClass:
-                                                      "fill-height ma-0",
-                                                    attrs: {
-                                                      align: "center",
-                                                      justify: "center"
-                                                    }
-                                                  },
-                                                  [
-                                                    _c("v-progress-circular", {
-                                                      attrs: {
-                                                        indeterminate: "",
-                                                        color: "grey lighten-5"
-                                                      }
-                                                    })
-                                                  ],
-                                                  1
-                                                )
-                                              ]
-                                            },
-                                            proxy: true
-                                          }
+                                          _c("v-img", {
+                                            ref: "img",
+                                            refInFor: true,
+                                            staticClass: "grey lighten-2",
+                                            attrs: {
+                                              src: "",
+                                              "lazy-src": "",
+                                              "aspect-ratio": "1"
+                                            }
+                                          })
                                         ],
-                                        null,
-                                        true
+                                        1
                                       )
-                                    })
-                                  ],
-                                  1
-                                )
-                              })
+                                    }),
+                                    1
+                                  )
+                                ],
+                                1
+                              )
                             ],
-                            2
+                            1
                           )
                         ],
                         1
@@ -2075,67 +2451,92 @@ var render = function() {
                                 1
                               ),
                               _vm._v(" "),
-                              _vm._l(9, function(n) {
-                                return _c(
-                                  "v-col",
-                                  {
-                                    key: n,
-                                    staticClass: "d-flex child-flex",
-                                    attrs: { cols: "4" }
-                                  },
-                                  [
-                                    _c("v-img", {
-                                      staticClass: "grey lighten-2",
-                                      attrs: {
-                                        src:
-                                          "https://picsum.photos/500/300?image=" +
-                                          (n * 5 + 10),
-                                        "lazy-src":
-                                          "https://picsum.photos/10/6?image=" +
-                                          (n * 5 + 10),
-                                        "aspect-ratio": "1"
-                                      },
-                                      scopedSlots: _vm._u(
-                                        [
-                                          {
-                                            key: "placeholder",
-                                            fn: function() {
-                                              return [
-                                                _c(
-                                                  "v-row",
-                                                  {
+                              _c(
+                                "v-col",
+                                { attrs: { cols: "12", sm: "12" } },
+                                [
+                                  _c("v-file-input", {
+                                    ref: "updateRoomsGalleryImage",
+                                    staticClass: "file_image",
+                                    attrs: {
+                                      "show-size": "",
+                                      label:
+                                        "Загрузка изображений для галлереи",
+                                      "prepend-icon": "mdi-camera",
+                                      multiple: "",
+                                      "error-messages":
+                                        _vm.errors.gallery_images
+                                    },
+                                    on: {
+                                      change: function($event) {
+                                        return _vm.attachImageUpdateRoomGallery(
+                                          $event
+                                        )
+                                      }
+                                    }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-col",
+                                { attrs: { cols: "12" } },
+                                [
+                                  _c(
+                                    "v-row",
+                                    { ref: "gallery_container_edit" },
+                                    [
+                                      !_vm.room_data.gallery_images.length &&
+                                      !_vm.fileStore.length
+                                        ? _c(
+                                            "p",
+                                            { staticClass: "text-center px-4" },
+                                            [
+                                              _vm._v(
+                                                "\n                                            Изображения в галлереии отсутствуют!\n                                        "
+                                              )
+                                            ]
+                                          )
+                                        : _vm._l(
+                                            _vm.room_data.gallery_images,
+                                            function(image) {
+                                              return _c(
+                                                "v-col",
+                                                {
+                                                  key: image.id,
+                                                  staticClass:
+                                                    "d-flex child-flex",
+                                                  attrs: { cols: "4" },
+                                                  on: {
+                                                    click:
+                                                      _vm.deleteDisplayOldImage
+                                                  }
+                                                },
+                                                [
+                                                  _c("img", {
                                                     staticClass:
-                                                      "fill-height ma-0",
+                                                      "grey lighten-2",
                                                     attrs: {
-                                                      align: "center",
-                                                      justify: "center"
+                                                      src:
+                                                        "/storage/" +
+                                                        image.name,
+                                                      "lazy-src":
+                                                        "/storage/" + image.name
                                                     }
-                                                  },
-                                                  [
-                                                    _c("v-progress-circular", {
-                                                      attrs: {
-                                                        indeterminate: "",
-                                                        color: "grey lighten-5"
-                                                      }
-                                                    })
-                                                  ],
-                                                  1
-                                                )
-                                              ]
-                                            },
-                                            proxy: true
-                                          }
-                                        ],
-                                        null,
-                                        true
-                                      )
-                                    })
-                                  ],
-                                  1
-                                )
-                              })
+                                                  })
+                                                ]
+                                              )
+                                            }
+                                          )
+                                    ],
+                                    2
+                                  )
+                                ],
+                                1
+                              )
                             ],
-                            2
+                            1
                           )
                         ],
                         1
@@ -2515,65 +2916,43 @@ var render = function() {
                           [
                             _c(
                               "v-list-item-content",
-                              _vm._l(9, function(n) {
-                                return _c(
-                                  "v-col",
-                                  {
-                                    key: n,
-                                    staticClass: "d-flex child-flex",
-                                    attrs: { cols: "4" }
-                                  },
+                              [
+                                _c(
+                                  "v-row",
                                   [
-                                    _c("v-img", {
-                                      staticClass: "grey lighten-2",
-                                      attrs: {
-                                        src:
-                                          "https://picsum.photos/500/300?image=" +
-                                          (n * 5 + 10),
-                                        "lazy-src":
-                                          "https://picsum.photos/10/6?image=" +
-                                          (n * 5 + 10),
-                                        "aspect-ratio": "1"
-                                      },
-                                      scopedSlots: _vm._u(
-                                        [
-                                          {
-                                            key: "placeholder",
-                                            fn: function() {
-                                              return [
-                                                _c(
-                                                  "v-row",
-                                                  {
-                                                    staticClass:
-                                                      "fill-height ma-0",
-                                                    attrs: {
-                                                      align: "center",
-                                                      justify: "center"
-                                                    }
-                                                  },
-                                                  [
-                                                    _c("v-progress-circular", {
-                                                      attrs: {
-                                                        indeterminate: "",
-                                                        color: "grey lighten-5"
-                                                      }
-                                                    })
-                                                  ],
-                                                  1
-                                                )
+                                    !_vm.room.gallery_images.length
+                                      ? _c("p", [
+                                          _vm._v(" Изображения отсутствуют!")
+                                        ])
+                                      : _vm._l(
+                                          _vm.room.gallery_images,
+                                          function(image) {
+                                            return _c(
+                                              "v-col",
+                                              {
+                                                key: image.id,
+                                                staticClass:
+                                                  "d-flex child-flex",
+                                                attrs: { cols: "4" }
+                                              },
+                                              [
+                                                _c("img", {
+                                                  staticClass: "grey lighten-2",
+                                                  attrs: {
+                                                    src:
+                                                      "/storage/" + image.name,
+                                                    "lazy-src":
+                                                      "/storage/" + image.name
+                                                  }
+                                                })
                                               ]
-                                            },
-                                            proxy: true
+                                            )
                                           }
-                                        ],
-                                        null,
-                                        true
-                                      )
-                                    })
+                                        )
                                   ],
-                                  1
+                                  2
                                 )
-                              }),
+                              ],
                               1
                             )
                           ],
@@ -2753,54 +3132,72 @@ var render = function() {
         1
       ),
       _vm._v(" "),
-      _c("v-simple-table", {
-        attrs: { dark: "" },
-        scopedSlots: _vm._u([
-          {
-            key: "default",
-            fn: function() {
-              return [
-                _c("thead", [
-                  _c("tr", [
-                    _c("th", { staticClass: "text-left" }, [
-                      _vm._v("\n\t\t\t\t\t\t\t№\n\t\t\t\t\t\t")
+      _vm.loader
+        ? _c("div", { staticClass: "loader-wrap" }, [_c("Loader")], 1)
+        : _c("v-simple-table", {
+            attrs: { dark: "" },
+            scopedSlots: _vm._u([
+              {
+                key: "default",
+                fn: function() {
+                  return [
+                    _c("thead", [
+                      _c("tr", [
+                        _c("th", { staticClass: "text-left" }, [
+                          _vm._v("\n\t\t\t\t\t\t\t№\n\t\t\t\t\t\t")
+                        ]),
+                        _vm._v(" "),
+                        _c("th", { staticClass: "text-left" }, [
+                          _vm._v("\n\t\t\t\t\t\t\tНазвание\n\t\t\t\t\t\t")
+                        ]),
+                        _vm._v(" "),
+                        _c("th", { staticClass: "text-left" }, [
+                          _vm._v("\n\t\t\t\t\t\t\tТип\n\t\t\t\t\t\t")
+                        ]),
+                        _vm._v(" "),
+                        _c("th", { staticClass: "text-left" }, [
+                          _vm._v(
+                            "\n\t\t\t\t\t\t\tКоличество мест\n\t\t\t\t\t\t"
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("th", { staticClass: "text-left" }, [
+                          _vm._v("\n\t\t\t\t\t\t\tЦена\n\t\t\t\t\t\t")
+                        ]),
+                        _vm._v(" "),
+                        _c("th", { staticClass: "text-left" }, [
+                          _vm._v("\n\t\t\t\t\t\t\tДействие\n\t\t\t\t\t\t")
+                        ])
+                      ])
                     ]),
                     _vm._v(" "),
-                    _c("th", { staticClass: "text-left" }, [
-                      _vm._v("\n\t\t\t\t\t\t\tНазвание\n\t\t\t\t\t\t")
-                    ]),
-                    _vm._v(" "),
-                    _c("th", { staticClass: "text-left" }, [
-                      _vm._v("\n\t\t\t\t\t\t\tТип\n\t\t\t\t\t\t")
-                    ]),
-                    _vm._v(" "),
-                    _c("th", { staticClass: "text-left" }, [
-                      _vm._v("\n\t\t\t\t\t\t\tКоличество мест\n\t\t\t\t\t\t")
-                    ]),
-                    _vm._v(" "),
-                    _c("th", { staticClass: "text-left" }, [
-                      _vm._v("\n\t\t\t\t\t\t\tЦена\n\t\t\t\t\t\t")
-                    ]),
-                    _vm._v(" "),
-                    _c("th", { staticClass: "text-left" }, [
-                      _vm._v("\n\t\t\t\t\t\t\tДействие\n\t\t\t\t\t\t")
-                    ])
-                  ])
-                ]),
-                _vm._v(" "),
-                _c(
-                  "tbody",
-                  _vm._l(_vm.getRoomsAdmin, function(room) {
-                    return _c("Room", { key: room.id, attrs: { room: room } })
-                  }),
-                  1
-                )
-              ]
-            },
-            proxy: true
-          }
-        ])
-      }),
+                    _c(
+                      "tbody",
+                      [
+                        _vm.loader
+                          ? _c(
+                              "div",
+                              { staticClass: "loader-wrap" },
+                              [_c("Loader")],
+                              1
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm._l(_vm.getRoomsAdmin, function(room) {
+                          return _c("Room", {
+                            key: room.id,
+                            attrs: { room: room }
+                          })
+                        })
+                      ],
+                      2
+                    )
+                  ]
+                },
+                proxy: true
+              }
+            ])
+          }),
       _vm._v(" "),
       [
         _c(
@@ -2827,6 +3224,40 @@ var render = function() {
       ]
     ],
     2
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/loader/Loader.vue?vue&type=template&id=f03ce418&scoped=true&":
+/*!*************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/loader/Loader.vue?vue&type=template&id=f03ce418&scoped=true& ***!
+  \*************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "loader" },
+    [
+      _c("v-progress-circular", {
+        attrs: { indeterminate: "", color: "red", size: "120" }
+      })
+    ],
+    1
   )
 }
 var staticRenderFns = []

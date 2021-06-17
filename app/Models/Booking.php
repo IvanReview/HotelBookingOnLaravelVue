@@ -21,8 +21,8 @@ class Booking extends Model
         return $this->belongsTo(Room::class);
     }
 
-    public function scopeStatus($query, $status)
+    public function scopeStatus($query)
     {
-        return $query->where('status', $status);
+        return $query->where('status', 0);
     }
 }

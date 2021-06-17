@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateRoomRequest;
 use App\Http\Requests\UpdateRoomRequest;
+use App\Models\Gallery;
 use App\Models\Room;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -21,7 +22,7 @@ class RoomsController extends Controller
     {
         $itemOnPage = $request->items_on_page ? $request->items_on_page : 5;
 
-        $rooms = Room::paginate($itemOnPage);
+        $rooms = Room::with('galleryImages')->paginate($itemOnPage);
 
         return response()->json($rooms,200);
 
@@ -41,7 +42,7 @@ class RoomsController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Сохранить созданную комнату
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
@@ -50,11 +51,26 @@ class RoomsController extends Controller
     {
         $data = $request->all();
 
+
         //картинка
-        $path = $request->file('image')->store('products');
+        $path = $request->file('image')->store('rooms');
         $data['image'] = $path;
 
         $newRoom = Room::create($data);
+
+        //галлерея
+        if (isset($data['gallery_img']) && count($data['gallery_img'])) {
+            foreach ($data['gallery_img'] as $key => $imageFile){
+
+                $path = $imageFile->store('rooms');
+                $gallery['name'] = $path;
+
+                $newRoom->galleryImages()->create($gallery);
+            }
+
+            $newRoom = Room::with('galleryImages')->find($newRoom->id);
+        }
+
 
         if ($newRoom){
 
@@ -77,7 +93,7 @@ class RoomsController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Обновление данных комнаты(номера)
      *
      * @param \Illuminate\Http\Request $request
      * @param Room $room
@@ -87,7 +103,7 @@ class RoomsController extends Controller
     {
         $data = $request->all();
 
-        //загрузка файла
+        //загрузка файла главного изображения
         if ($request->hasFile('image')) {
             $request->validate([
                 'image'  => 'required|image|mimes:jpeg,png,jpg',
@@ -98,7 +114,48 @@ class RoomsController extends Controller
             $data['image'] = $path;
         }
 
+
+        //работа с изображениями для галереи
+        if (isset($data['gallery_img']) && count($data['gallery_img'])){
+
+            $room_id_not_del = [];
+            foreach ($data['gallery_img'] as $imageData){
+                //если файл значит новое изобр
+                if (is_file($imageData)) {
+
+                    $path = $imageData->store('rooms');
+                    $gallery['name'] = $path;
+
+                    $createImage = $room->galleryImages()->create($gallery);
+                    $room_id_not_del[] = $createImage['id'];
+                }
+
+                //если строка значит старое, возможно что то нужно удалить
+                if (is_string($imageData))
+                    $room_id_not_del[] = $imageData;
+            }
+
+            //выбираем все значения, которых нет в массиве прилетевшем с фронта, их нужно удалить
+            $image_for_del = $room->galleryImages()->whereNotIn('id', $room_id_not_del)->get();
+            if (count($image_for_del)){
+                foreach ($image_for_del as $key => $image){
+                    $image->delete();
+                    Storage::delete($image->name);
+                }
+            }
+
+        } else {
+            //если массив с галлереей пустой значится все удалили
+            $gallery_image_old = $room->galleryImages()->get();
+            foreach ($gallery_image_old as $image){
+                $image->delete();
+                Storage::delete($image->name);
+            }
+        }
+
         $success = $room->update($data);
+
+        $room = $room::with('galleryImages')->find($room->id);
          if ($success){
 
              return response()->json($room, 200);

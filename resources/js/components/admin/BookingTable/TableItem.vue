@@ -37,13 +37,15 @@ export default {
     props: {
         book: {
             type: Object,
-            default: {}
+            default: function () {
+                return {}
+            },
         },
     },
     computed: {
         count_day(){
             let a = Date.parse(this.book.date_end) - Date.parse(this.book.date_start)
-            return a/86400000
+            return a / 86400000
         }
     },
     methods: {

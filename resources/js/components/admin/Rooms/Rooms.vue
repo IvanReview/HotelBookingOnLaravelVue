@@ -34,7 +34,11 @@
                 v-on:change="paginateRooms"
             ></v-select>
         </v-col>
-		<v-simple-table dark>
+
+        <div class="loader-wrap" v-if="loader">
+            <Loader />
+        </div>
+		<v-simple-table dark v-else>
 			<template v-slot:default>
 				<thead>
 					<tr>
@@ -59,8 +63,12 @@
 					</tr>
 				</thead>
 
+
                 <!--Тело-->
 				<tbody>
+                    <div class="loader-wrap" v-if="loader">
+                        <Loader />
+                    </div>
 					<Room v-for="room in getRoomsAdmin"
                           :key="room.id"
                           :room="room"
@@ -87,13 +95,15 @@
     import {mapActions,mapGetters} from "vuex";
     import Room from "./Room";
     import CreateRoom from "./CreateRoom";
+    import Loader from "../../loader/Loader";
 
     export default {
         name: "Rooms",
-        components: {CreateRoom, Room},
+        components: {Loader, CreateRoom, Room},
 
         data: function () {
             return {
+                loader: true,
                 page: 1,
                 last_page: 0,
                 itemsOnPage: 5,
@@ -121,26 +131,17 @@
                     .then(resp => this.last_page = resp)
             },
 
-            createRoom() {
-
-            },
-
-            openGuestCard() {
-
-            },
-
-            editGuestCard() {
-
-            }
-
-
         },
         beforeCreate() {
 
         },
         mounted() {
 
-            this.fetchRooms({}).then(resp => this.last_page = resp)
+            this.fetchRooms({}).then(resp => {
+                this.last_page = resp
+                this.loader = false
+            })
+
 
         }
     }

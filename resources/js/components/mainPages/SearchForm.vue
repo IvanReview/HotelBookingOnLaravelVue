@@ -154,14 +154,14 @@ export default {
     watch: {
         //переключать дату выезда, чтобы она всега была на день больше даты заезда
         dateEnd(val) {
-            if (val < this.dateStart) {
+            if (val <= this.dateStart) {
                 let temp = new Date(this.dateStart)
                 this.dateEnd = new Date(temp.getTime() + 86400000).toISOString().substr(0, 10)
             }
         },
 
         dateStart(val) {
-            if (val > this.dateEnd) {
+            if (val >= this.dateEnd) {
                 let temp = new Date(this.dateStart)
                 this.dateEnd = new Date(temp.getTime() + 86400000).toISOString().substr(0, 10)
             }

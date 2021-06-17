@@ -87,32 +87,47 @@
                                     <v-card-title>Галерея Изображений </v-card-title>
                                 </v-col>
 
-                                <v-col
-                                    v-for="n in 9"
-                                    :key="n"
-                                    class="d-flex child-flex"
-                                    cols="4"
-                                >
+                                <!--//изображения галлереи-->
+                                <v-col cols="12" sm="12">
 
-                                    <v-img
-                                        :src="`https://picsum.photos/500/300?image=${n * 5 + 10}`"
-                                        :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
-                                        aspect-ratio="1"
-                                        class="grey lighten-2"
-                                    >
-                                        <template v-slot:placeholder>
-                                            <v-row
-                                                class="fill-height ma-0"
-                                                align="center"
-                                                justify="center"
+                                    <v-file-input
+                                        show-size
+                                        label="Загрузка изображений для галлереи"
+                                        class="file_image"
+                                        ref="updateRoomsGalleryImage"
+                                        prepend-icon="mdi-camera"
+                                        multiple
+                                        v-on:change="attachImageUpdateRoomGallery($event)"
+                                        :error-messages="errors.gallery_images"
+                                    ></v-file-input>
+                                </v-col>
+
+                                <v-col  cols="12">
+
+                                    <v-row ref="gallery_container_edit">
+
+                                        <p v-if="!room_data.gallery_images.length && !fileStore.length"
+                                           class="text-center px-4"
+                                        >
+                                            Изображения в галлереии отсутствуют!
+                                        </p>
+
+                                        <v-col
+                                            v-else
+                                            v-for="image in room_data.gallery_images"
+                                            :key="image.id"
+                                            class="d-flex child-flex"
+                                            cols="4"
+                                            @click="deleteDisplayOldImage"
+
+                                        >
+                                            <img :src="`/storage/${image.name}`"
+                                                 class="grey lighten-2"
+                                                 :lazy-src="`/storage/${image.name}`"
+
                                             >
-                                                <v-progress-circular
-                                                    indeterminate
-                                                    color="grey lighten-5"
-                                                ></v-progress-circular>
-                                            </v-row>
-                                        </template>
-                                    </v-img>
+                                        </v-col>
+                                    </v-row>
                                 </v-col>
                             </v-row>
 
@@ -165,7 +180,11 @@ export default {
                 amount_guests: '',
                 comfort_level: '',
                 image: [],
+                gallery_images: [],
             },
+
+            fileStore: [],
+
             isLoading: false,
             alert: true,
             color: 'teal',
@@ -176,6 +195,9 @@ export default {
             errors: [],
         }
     },
+    watch: {
+
+    },
     computed: {
         ...mapGetters([
             'getRoomEditErrors'
@@ -185,8 +207,111 @@ export default {
         ...mapActions([
             'updateRoomInBd'
         ]),
+        //показать изображения галлереи после загрузки
+        attachImageUpdateRoomGallery() {
 
+            let files = this.$refs.updateRoomsGalleryImage.$refs.input.files
+
+            let parentContainer = this.$refs.gallery_container_edit
+            let container = parentContainer.querySelectorAll('.empty_container_edit')
+
+            //если количество файлов > количества контейнеров добавляем еще
+            if (container.length < files.length) {
+
+                for (let index = 0; index < files.length - container.length; index++) {
+
+                    let el = document.createElement('div')
+                    el.classList.add("d-flex", "child-flex", "col", "col-4", "empty_container_edit")
+                    parentContainer.append(el)
+                }
+                container = parentContainer.querySelectorAll('.empty_container_edit')
+            }
+
+            //проходимся по массиву файлов и вызыв методы показа изображения и удаления
+            for (let i in files) {
+                if (files.hasOwnProperty(i)) {
+
+                    let addElemId = this.fileStore.push(files[i]) - 1
+
+                    this.showImageGallery(files[i], container[i])
+
+                    this.deleteDisplayImage(addElemId, container[i])
+                }
+            }
+        },
+
+        //непосредственно отображение изображения галлереи
+        showImageGallery(file, container) {
+            let reader = new FileReader()
+
+            //содержимое контейнера удаляем
+            container.innerHTML = ''
+
+            reader.readAsDataURL(file);
+
+            reader.onload = function (e) {
+
+                //внутри контейнера создаем тег img
+                container.innerHTML = '<img class="image_item" src="">'
+
+                //вставляем в img файл
+                container.querySelector('img').setAttribute('src', reader.result)
+
+                container.classList.remove('empty_container_edit')
+
+            };
+        },
+
+        //удалить вновь добавленное изображение по клику
+        deleteDisplayImage(addElemId, container) {
+
+            container.addEventListener('click', () => {
+
+                //сносим контаинер
+                container.remove()
+
+                //и файл из переменной
+                delete this.fileStore[addElemId]
+            })
+        },
+
+        //удалить старое изображение по клику
+        deleteDisplayOldImage(elemId, container=false){
+
+            this.room_data.gallery_images.splice(elemId, 1)
+        },
+
+        //Добавить Изображение методом перетаскивания
+        dragAndDrop(areaWhenDragFile, inputFileField) {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName, index) => {
+                areaWhenDragFile.addEventListener(eventName, (e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+
+                    if (index < 2) {
+                        areaWhenDragFile.style.background = '#2196f3'
+                    } else {
+                        areaWhenDragFile.style.background = '#1e1e1e'
+
+                        if (index === 3) {
+                            //dataTransfer хранит объекты перетаскиваемые мышью
+                            inputFileField.files = e.dataTransfer.files
+
+                            //вызвать событие передаем change, а при событии change срабатывает уже другая функц загрузки изобр
+                            inputFileField.dispatchEvent(new Event('change'))
+                        }
+                    }
+
+                })
+            })
+        },
+
+        //Обновить данные для номера
         updateData() {
+            let file = this.fileStore.filter(item => item !== 'undefined')
+            let old_image_id = this.room_data.gallery_images.map(item => item.id)
+            let result_image_arr = file.concat(old_image_id)//сливаем новые изобр(файл) и старое(достат id)
+
             this.isLoading = 'orange'
             let formData = new FormData
             formData.append('id', this.room_data.id)
@@ -196,6 +321,13 @@ export default {
             formData.append('comfort_level', this.room_data.comfort_level)
             formData.append('image', this.room_data.image)
             formData.append('_method', "PUT")
+
+            if (result_image_arr.length){
+                result_image_arr.forEach((image, index) => {
+
+                    formData.append(`${'gallery_img'}[${index}]`, image)
+                })
+            }
 
             this.updateRoomInBd(formData)
                 .then(response => {
@@ -237,6 +369,17 @@ export default {
     },
     mounted() {
         this.room_data = Object.assign({}, this.room)
+    },
+
+    updated() {
+
+        if (this.$refs.updateRoomsGalleryImage && this.$refs.gallery_container_edit) {
+            let inputFileFieldGallery = this.$refs.updateRoomsGalleryImage.$refs.input
+            let areaWhenDragFile = this.$refs.gallery_container_edit
+
+            this.dragAndDrop(areaWhenDragFile, inputFileFieldGallery)
+        }
+
     }
 }
 </script>
