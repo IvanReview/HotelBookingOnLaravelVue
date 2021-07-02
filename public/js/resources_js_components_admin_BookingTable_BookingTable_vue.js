@@ -135,6 +135,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 
 
@@ -1556,6 +1562,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     logout: function logout() {
       var _this = this;
 
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
       axios.get('/api/auth/logout').then(function (response) {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
@@ -2806,7 +2814,19 @@ var render = function() {
                   "tbody",
                   [
                     !_vm.getBookingData.length
-                      ? _c("p", [_vm._v(" Нет забронированных номкров")])
+                      ? _c(
+                          "td",
+                          {
+                            staticClass: "text-center py-5",
+                            staticStyle: { width: "100%" },
+                            attrs: { colspan: "2" }
+                          },
+                          [
+                            _vm._v(
+                              "\n                    Нет забронированных номеров\n                "
+                            )
+                          ]
+                        )
                       : _vm._l(_vm.getBookingData, function(item) {
                           return _c("TableItem", {
                             key: item.id,

@@ -85,10 +85,10 @@ export default {
         },
 
         logout() {
+            localStorage.removeItem('token')
+            localStorage.removeItem('user')
             axios.get('/api/auth/logout')
                 .then(response => {
-                    localStorage.removeItem('token')
-                    localStorage.removeItem('user')
 
                     this.$store.dispatch('authenticateAction', response.data.user)
 

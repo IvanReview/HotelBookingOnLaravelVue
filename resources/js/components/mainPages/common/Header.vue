@@ -172,6 +172,8 @@ export default {
     methods: {
 
         logout() {
+            localStorage.removeItem('token')
+            localStorage.removeItem('user')
             axios.get('/api/auth/logout')
                 .then(response => {
                     localStorage.removeItem('token')

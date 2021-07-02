@@ -98,10 +98,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     logout: function logout() {
       var _this = this;
 
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
       axios.get('/api/auth/logout').then(function (response) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-
         _this.$store.dispatch('authenticateAction', response.data.user);
 
         if (_this.$route.path !== '/') {

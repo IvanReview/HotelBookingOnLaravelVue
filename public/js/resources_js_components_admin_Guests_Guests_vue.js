@@ -632,20 +632,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "LookGuest",
   props: {
@@ -1827,55 +1813,23 @@ var render = function() {
                               "v-row",
                               { staticClass: "fill-height" },
                               [
-                                _c(
-                                  "v-card-title",
-                                  [
-                                    _c(
-                                      "v-btn",
-                                      { attrs: { dark: "", icon: "" } },
-                                      [
-                                        _c("v-icon", [
-                                          _vm._v("mdi-chevron-left")
-                                        ])
-                                      ],
-                                      1
-                                    ),
-                                    _vm._v(" "),
-                                    _c("v-spacer"),
-                                    _vm._v(" "),
-                                    _c(
-                                      "v-btn",
-                                      {
-                                        staticClass: "mr-4",
-                                        attrs: { dark: "", icon: "" }
-                                      },
-                                      [_c("v-icon", [_vm._v("mdi-pencil")])],
-                                      1
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "v-btn",
-                                      { attrs: { dark: "", icon: "" } },
-                                      [
-                                        _c("v-icon", [
-                                          _vm._v("mdi-dots-vertical")
-                                        ])
-                                      ],
-                                      1
-                                    )
-                                  ],
-                                  1
-                                ),
-                                _vm._v(" "),
                                 _c("v-spacer"),
                                 _vm._v(" "),
                                 _c(
                                   "v-card-title",
-                                  { staticClass: "white--text pl-7 pt-12" },
+                                  {
+                                    staticClass:
+                                      "white--text pl-3 pt-12 mt-7 text-center",
+                                    staticStyle: { width: "100%" }
+                                  },
                                   [
                                     _c(
                                       "div",
-                                      { staticClass: "display-1 pl-7 pt-12" },
+                                      {
+                                        staticClass:
+                                          "display-1 pl-3 pt-12 mt-7 text-center",
+                                        staticStyle: { width: "100%" }
+                                      },
                                       [
                                         _vm._v(
                                           "\n                                    " +

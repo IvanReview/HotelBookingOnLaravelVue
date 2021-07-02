@@ -87,7 +87,13 @@
 
                 <!--Тело-->
                 <tbody>
-                    <p v-if="!getBookingData.length"> Нет забронированных номкров</p>
+                    <td class="text-center py-5"
+                        style="width: 100%"
+                        v-if="!getBookingData.length"
+                        colspan="2"
+                    >
+                        Нет забронированных номеров
+                    </td>
                     <TableItem
                         v-else
                         v-for="item in getBookingData"

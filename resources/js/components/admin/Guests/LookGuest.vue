@@ -33,26 +33,12 @@
                             dark
                         >
                             <v-row class="fill-height">
-                                <v-card-title>
-                                    <v-btn dark icon>
-                                        <v-icon>mdi-chevron-left</v-icon>
-                                    </v-btn>
 
-                                    <v-spacer></v-spacer>
-
-                                    <v-btn dark icon class="mr-4">
-                                        <v-icon>mdi-pencil</v-icon>
-                                    </v-btn>
-
-                                    <v-btn dark icon>
-                                        <v-icon>mdi-dots-vertical</v-icon>
-                                    </v-btn>
-                                </v-card-title>
 
                                 <v-spacer></v-spacer>
 
-                                <v-card-title class="white--text pl-7 pt-12">
-                                    <div class="display-1 pl-7 pt-12">
+                                <v-card-title class="white--text pl-3 pt-12 mt-7 text-center" style="width: 100%">
+                                    <div class="display-1 pl-3 pt-12 mt-7 text-center" style="width: 100%">
                                         {{guest_prop.name}} {{guest_prop.surname}}
                                     </div>
                                 </v-card-title>

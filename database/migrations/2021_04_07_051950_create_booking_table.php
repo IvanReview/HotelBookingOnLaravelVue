@@ -15,11 +15,14 @@ class CreateBookingTable extends Migration
     {
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
-            $table->integer('guest_id');
-            $table->integer('room_id');
+            $table->bigInteger('guest_id')->unsigned();
+            $table->bigInteger('room_id')->unsigned();
             $table->date('date_start');
             $table->date('date_end');
             $table->timestamps();
+
+            $table->foreign('guest_id')->references('id')->on('guests');
+            $table->foreign('room_id')->references('id')->on('rooms');
         });
     }
 
