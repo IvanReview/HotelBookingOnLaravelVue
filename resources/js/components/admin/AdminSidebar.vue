@@ -60,7 +60,7 @@
                             <v-icon>mdi-table-large</v-icon>
                         </v-list-item-icon>
                         <v-list-item-title>
-                            Главное расписание
+                            Главное расписание(тест)
                         </v-list-item-title>
                     </v-list-item>
                 </router-link>

@@ -416,13 +416,95 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'RoomsItem',
   components: {},
   data: function data() {
     return {
       loading: false,
-      selection: 1
+      selection: 1,
+      room_data: this.room,
+      image: this.room.image,
+      nex_image_num: 0,
+      count: 0
     };
   },
   methods: {
@@ -440,7 +522,26 @@ __webpack_require__.r(__webpack_exports__);
           }
         });
       }, 1000);
-    }
+    },
+    nextImage: function nextImage() {
+      if (this.room_data.gallery_images.length && this.room_data.gallery_images[this.count]) {
+        this.image = this.room_data.gallery_images[this.count].name;
+        this.count++;
+      } else {
+        this.count = 0;
+        this.image = this.room.image;
+      }
+    },
+    prevImage: function prevImage() {
+      if (this.room_data.gallery_images.length && this.room_data.gallery_images[this.count]) {
+        this.image = this.room_data.gallery_images[this.count].name;
+        this.count--;
+      } else {
+        this.count = this.room_data.gallery_images.length - 1;
+        this.image = this.room.image;
+      }
+    },
+    showGallery: function showGallery(roomId) {}
   },
   props: {
     room: {}
@@ -1784,31 +1885,241 @@ var render = function() {
             1
           ),
           _vm._v(" "),
-          _c("v-card-actions", { staticClass: "d-flex justify-end mb-2" }, [
-            _c(
-              "div",
-              { staticClass: "my-2 float-right" },
-              [
-                _c(
-                  "v-btn",
-                  {
-                    attrs: { color: "teal", dark: "", large: "" },
-                    on: {
-                      click: function($event) {
-                        return _vm.reserve(_vm.room.id)
+          _c(
+            "v-card-actions",
+            { staticClass: "d-flex justify-space-between mb-2" },
+            [
+              _c(
+                "div",
+                { staticClass: "my-2 float-left" },
+                [
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { color: "teal", dark: "", large: "" },
+                      on: {
+                        click: function($event) {
+                          return _vm.reserve(_vm.room.id)
+                        }
                       }
-                    }
-                  },
-                  [
-                    _vm._v(
-                      "\n                    Забронировать\n                "
-                    )
-                  ]
-                )
-              ],
-              1
-            )
-          ])
+                    },
+                    [
+                      _vm._v(
+                        "\n                    Забронировать\n                "
+                      )
+                    ]
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "my-2 mx-2 float-left" },
+                [
+                  _c("v-dialog", {
+                    attrs: {
+                      transition: "dialog-bottom-transition",
+                      "max-width": "600"
+                    },
+                    scopedSlots: _vm._u([
+                      {
+                        key: "activator",
+                        fn: function(ref) {
+                          var on = ref.on
+                          var attrs = ref.attrs
+                          return [
+                            _c(
+                              "v-btn",
+                              _vm._g(
+                                _vm._b(
+                                  {
+                                    attrs: {
+                                      color: "deep-purple darken-1",
+                                      large: ""
+                                    },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.showGallery(_vm.room.id)
+                                      }
+                                    }
+                                  },
+                                  "v-btn",
+                                  attrs,
+                                  false
+                                ),
+                                on
+                              ),
+                              [_c("v-icon", [_vm._v("mdi-magnify")])],
+                              1
+                            )
+                          ]
+                        }
+                      },
+                      {
+                        key: "default",
+                        fn: function(dialog) {
+                          return [
+                            _c(
+                              "v-card",
+                              [
+                                _c(
+                                  "v-toolbar",
+                                  { attrs: { color: "primary", dark: "" } },
+                                  [
+                                    _vm._v(
+                                      "\n                                Галлерея\n                            "
+                                    )
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "v-card-text",
+                                  [
+                                    _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "text-h2 py-12 d-flex justify-space-between"
+                                      },
+                                      [
+                                        _c(
+                                          "v-btn",
+                                          {
+                                            attrs: {
+                                              text: "",
+                                              color: "primary"
+                                            },
+                                            on: { click: _vm.prevImage }
+                                          },
+                                          [
+                                            _c(
+                                              "v-icon",
+                                              { attrs: { color: "teal" } },
+                                              [_vm._v("mdi-arrow-left")]
+                                            )
+                                          ],
+                                          1
+                                        ),
+                                        _vm._v(" "),
+                                        _c("img", {
+                                          staticStyle: {
+                                            "max-height": "350px",
+                                            "max-width": "80%"
+                                          },
+                                          attrs: {
+                                            src: _vm.image
+                                              ? "/storage/" + _vm.image
+                                              : "/storage/no_image.jpg"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c(
+                                          "v-btn",
+                                          {
+                                            attrs: {
+                                              text: "",
+                                              color: "primary"
+                                            },
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.nextImage()
+                                              }
+                                            }
+                                          },
+                                          [
+                                            _c(
+                                              "v-icon",
+                                              { attrs: { color: "teal" } },
+                                              [_vm._v("mdi-arrow-right")]
+                                            )
+                                          ],
+                                          1
+                                        )
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    !_vm.room_data.gallery_images.length
+                                      ? _c(
+                                          "p",
+                                          {
+                                            staticClass:
+                                              "d-flex justify-content-center"
+                                          },
+                                          [
+                                            _vm._v(
+                                              "\n                                    Изображения галлереи отсутствуют\n                                "
+                                            )
+                                          ]
+                                        )
+                                      : _c(
+                                          "v-row",
+                                          { ref: "gallery_container_ref" },
+                                          _vm._l(
+                                            _vm.room_data.gallery_images,
+                                            function(image, index) {
+                                              return _c(
+                                                "v-col",
+                                                {
+                                                  key: index,
+                                                  ref: "empty_container",
+                                                  refInFor: true,
+                                                  staticClass:
+                                                    "d-flex child-flex empty_container",
+                                                  attrs: { cols: "2" }
+                                                },
+                                                [
+                                                  _c("img", {
+                                                    attrs: {
+                                                      src: image.name
+                                                        ? "/storage/" +
+                                                          image.name
+                                                        : "/storage/no_image.jpg"
+                                                    }
+                                                  })
+                                                ]
+                                              )
+                                            }
+                                          ),
+                                          1
+                                        )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "v-card-actions",
+                                  { staticClass: "justify-end" },
+                                  [
+                                    _c(
+                                      "v-btn",
+                                      {
+                                        attrs: { text: "" },
+                                        on: {
+                                          click: function($event) {
+                                            dialog.value = false
+                                          }
+                                        }
+                                      },
+                                      [_vm._v("Close")]
+                                    )
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            )
+                          ]
+                        }
+                      }
+                    ])
+                  })
+                ],
+                1
+              )
+            ]
+          )
         ],
         2
       )

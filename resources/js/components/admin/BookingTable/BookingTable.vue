@@ -87,7 +87,9 @@
 
                 <!--Тело-->
                 <tbody>
+                    <p v-if="!getBookingData.length"> Нет забронированных номкров</p>
                     <TableItem
+                        v-else
                         v-for="item in getBookingData"
                         :key="item.id"
                         :book=" item"

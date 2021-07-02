@@ -133,6 +133,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
 
 
 
@@ -2802,13 +2804,17 @@ var render = function() {
                 _vm._v(" "),
                 _c(
                   "tbody",
-                  _vm._l(_vm.getBookingData, function(item) {
-                    return _c("TableItem", {
-                      key: item.id,
-                      attrs: { book: item }
-                    })
-                  }),
-                  1
+                  [
+                    !_vm.getBookingData.length
+                      ? _c("p", [_vm._v(" Нет забронированных номкров")])
+                      : _vm._l(_vm.getBookingData, function(item) {
+                          return _c("TableItem", {
+                            key: item.id,
+                            attrs: { book: item }
+                          })
+                        })
+                  ],
+                  2
                 )
               ]
             },

@@ -174,7 +174,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "CreateRoom",
@@ -282,6 +281,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         });
       });
     },
+    //Создать комнату
     createData: function createData() {
       var _this2 = this;
 
@@ -2921,7 +2921,7 @@ var render = function() {
                                   "v-row",
                                   [
                                     !_vm.room.gallery_images.length
-                                      ? _c("p", [
+                                      ? _c("p", { staticClass: "ml-5" }, [
                                           _vm._v(" Изображения отсутствуют!")
                                         ])
                                       : _vm._l(

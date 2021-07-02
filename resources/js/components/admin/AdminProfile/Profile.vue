@@ -142,6 +142,7 @@ import {mapActions, mapGetters} from "vuex";
                         this.snackbar = true
                         this.color = 'teal'
                         this.text = 'Данные изменены!'
+                        this.errors = []
                     })
                     .catch(errors => {
                         this.errors = errors.response.data.errors

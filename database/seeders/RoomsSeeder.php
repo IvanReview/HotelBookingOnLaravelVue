@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use  Illuminate\Support\Facades\DB;
+
 
 class RoomsSeeder extends Seeder
 {
@@ -16,60 +18,68 @@ class RoomsSeeder extends Seeder
     {
         DB::table('rooms')->insert([
             [
-                'name' => 'Номер №1',
+                'name' => 'Номер №10',
                 'amount_guests' => '2',
                 'price' => '4000',
                 'comfort_level' => 'Эконом',
-                'image' => '',
+                'image' => 'images/1.jpg',
+                "created_at" => Carbon::now()
             ],
             [
-                'name' => 'Номер №2',
+                'name' => 'Номер №12',
                 'amount_guests' => '2',
                 'price' => '4000',
                 'comfort_level' => 'Эконом',
-                'image' => '',
+                'image' => 'images/2.jpg',
+                "created_at" => Carbon::now()
             ],
             [
-                'name' => 'Номер №3',
+                'name' => 'Номер №13',
                 'amount_guests' => '2',
                 'price' => '3000',
                 'comfort_level' => 'Стандарт',
-                'image' => '',
+                'image' => 'images/3.jpeg',
+                "created_at" => Carbon::now()
             ],
             [
-                'name' => 'Номер №4',
+                'name' => 'Номер №14',
                 'amount_guests' => '2',
                 'price' => '3000',
                 'comfort_level' => 'Стандарт',
-                'image' => '',
+                'image' => 'images/4.jpg',
+                "created_at" => Carbon::now()
             ],
             [
-                'name' => 'Номер №5',
+                'name' => 'Номер №15',
                 'amount_guests' => '3',
                 'price' => '5000',
                 'comfort_level' => 'Апартамент',
-                'image' => '',
+                'image' => 'images/5.jpg',
+                "created_at" => Carbon::now()
             ],
             [
-                'name' => 'Номер №6',
+                'name' => 'Номер №16',
                 'amount_guests' => '4',
                 'price' => '6000',
                 'comfort_level' => 'Люкс',
-                'image' => '',
+                'image' => 'images/6.jpg',
+                "created_at" => Carbon::now()
             ],
             [
-                'name' => 'Номер №7',
+                'name' => 'Номер №17',
                 'amount_guests' => '4',
                 'price' => '6000',
                 'comfort_level' => 'Люкс',
-                'image' => '',
+                'image' => 'images/7.jpg',
+                "created_at" => Carbon::now()
             ],
             [
-                'name' => 'Номер №8',
+                'name' => 'Номер №18',
                 'amount_guests' => '4',
                 'price' => '8000',
                 'comfort_level' => 'Студия',
-                'image' => '',
+                'image' => 'images/9.jpg',
+                "created_at" => Carbon::now()
             ],
         ]);
     }

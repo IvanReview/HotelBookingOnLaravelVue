@@ -133,7 +133,7 @@ export default {
                         this.form = {}
                         this.text = "Вы успешно вошли!"
                         this.snackbar = true
-                        this.$router.push('/admin')
+                        this.$router.push('/')
                         this.$refs.form.reset()
                     }
                 })

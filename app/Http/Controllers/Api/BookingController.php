@@ -146,6 +146,7 @@ class BookingController extends Controller
             if ($booking->date_start < $data['date_start'] && $data['date_start'] < $booking->date_end){
                 $booking->update(['date_start' => $data['date_start']]);
             }
+            
             if ($booking->date_start > $data['date_start']) {
                 $result = Booking::where('room_id', $data['room_id'])
                     ->where('id', '<>', $data['booking_id'])
@@ -193,7 +194,7 @@ class BookingController extends Controller
 
 
         if ($success) {
-            return response()->json( $bookingEnd);
+            return response()->json($bookingEnd);
         } else {
             return response()->json(['data' => "Ошибка при обновлении"]);
         }

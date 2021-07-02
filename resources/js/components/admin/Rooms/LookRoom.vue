@@ -124,7 +124,7 @@
                         <v-list-item>
                             <v-list-item-content>
                                 <v-row >
-                                    <p v-if="!room.gallery_images.length"> Изображения отсутствуют!</p>
+                                    <p v-if="!room.gallery_images.length" class="ml-5"> Изображения отсутствуют!</p>
 
                                     <v-col
                                         v-else

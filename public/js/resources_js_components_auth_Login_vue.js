@@ -149,7 +149,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           _this.text = "Вы успешно вошли!";
           _this.snackbar = true;
 
-          _this.$router.push('/admin');
+          _this.$router.push('/');
 
           _this.$refs.form.reset();
         }

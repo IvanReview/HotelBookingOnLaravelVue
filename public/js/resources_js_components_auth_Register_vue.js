@@ -154,7 +154,7 @@ __webpack_require__.r(__webpack_exports__);
         _this.form = {};
         _this.snackbar = true;
 
-        _this.$router.push('/');
+        _this.$router.push('/login');
 
         _this.$refs.form.reset();
       })["catch"](function (errors) {

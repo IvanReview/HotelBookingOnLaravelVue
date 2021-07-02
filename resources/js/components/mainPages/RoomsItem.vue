@@ -63,9 +63,9 @@
                 </v-chip-group>
             </v-card-text>
 
-            <v-card-actions class="d-flex justify-end mb-2">
+            <v-card-actions class="d-flex justify-space-between mb-2">
 
-                <div class="my-2 float-right">
+                <div class="my-2 float-left">
                     <v-btn
                         color="teal"
                         dark
@@ -74,6 +74,84 @@
                     >
                         Забронировать
                     </v-btn>
+                </div>
+
+                <div class="my-2 mx-2 float-left">
+
+                    <v-dialog
+                        transition="dialog-bottom-transition"
+                        max-width="600"
+                    >
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                color="deep-purple darken-1"
+                                v-bind="attrs"
+                                v-on="on"
+                                large
+                                @click="showGallery(room.id)"
+                            >
+                                <v-icon>mdi-magnify</v-icon>
+                            </v-btn>
+                        </template>
+                        <template v-slot:default="dialog">
+                            <v-card>
+                                <v-toolbar
+                                    color="primary"
+                                    dark
+                                >
+                                    Галлерея
+                                </v-toolbar>
+                                <v-card-text>
+
+                                    <div class="text-h2 py-12 d-flex justify-space-between">
+                                        <v-btn
+                                            text
+                                            color="primary"
+                                            @click="prevImage"
+                                        >
+                                            <v-icon color="teal">mdi-arrow-left</v-icon>
+                                        </v-btn>
+                                        <img style="max-height: 350px; max-width: 80%"
+                                             :src="image ? `/storage/${image}`  : `/storage/no_image.jpg`"
+                                        >
+                                        <v-btn
+                                            text
+                                            color="primary"
+                                            @click="nextImage()"
+                                        >
+                                            <v-icon color="teal">mdi-arrow-right</v-icon>
+                                        </v-btn>
+                                    </div>
+
+                                    <p v-if="!room_data.gallery_images.length" class="d-flex justify-content-center">
+                                        Изображения галлереи отсутствуют
+                                    </p>
+
+                                    <v-row v-else ref="gallery_container_ref">
+                                        <v-col
+                                            v-for="(image, index)  in room_data.gallery_images"
+                                            :key="index"
+                                            class="d-flex child-flex empty_container"
+                                            cols="2"
+                                            ref="empty_container"
+
+                                        >
+                                            <img :src="image.name ?  `/storage/${image.name}` : `/storage/no_image.jpg`">
+
+                                        </v-col>
+                                    </v-row>
+
+                                </v-card-text>
+
+                                <v-card-actions class="justify-end">
+                                    <v-btn
+                                        text
+                                        @click="dialog.value = false"
+                                    >Close</v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </template>
+                    </v-dialog>
                 </div>
             </v-card-actions>
         </v-card>
@@ -87,10 +165,17 @@ export default {
     name: 'RoomsItem',
     components: {},
 
-    data: () => ({
-        loading: false,
-        selection: 1,
-    }),
+    data: function () {
+        return {
+            loading: false,
+            selection: 1,
+            room_data: this.room,
+            image: this.room.image,
+
+            nex_image_num: 0,
+            count: 0,
+        }
+    },
     methods: {
         reserve(roomId) {
             this.loading = true
@@ -99,8 +184,37 @@ export default {
                 this.loading = false
                 this.$router.push({path: `/form/${roomId}`,  query: { plan: 'private' }})
             }, 1000)
-
         },
+
+        nextImage() {
+
+            if (this.room_data.gallery_images.length && this.room_data.gallery_images[this.count]) {
+
+                this.image = this.room_data.gallery_images[this.count].name
+
+                this.count++
+            } else {
+                this.count = 0
+                this.image = this.room.image
+            }
+        },
+
+        prevImage() {
+
+            if (this.room_data.gallery_images.length && this.room_data.gallery_images[this.count]) {
+
+                this.image = this.room_data.gallery_images[this.count].name
+
+                this.count--
+            } else {
+                this.count = this.room_data.gallery_images.length - 1
+                this.image = this.room.image
+            }
+        },
+
+        showGallery(roomId) {
+
+        }
     },
     props: {
         room: {},

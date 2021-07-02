@@ -295,6 +295,7 @@ export default {
             })
         },
 
+        //Создать комнату
         createData() {
             this.isLoading = 'orange'
             let formData = new FormData

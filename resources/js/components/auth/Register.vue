@@ -138,7 +138,7 @@ export default {
                 .then(resp => {
                     this.form = {}
                     this.snackbar = true
-                    this.$router.push('/')
+                    this.$router.push('/login')
                     this.$refs.form.reset()
                 })
                 .catch(errors => {

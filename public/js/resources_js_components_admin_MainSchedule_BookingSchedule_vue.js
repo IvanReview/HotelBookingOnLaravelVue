@@ -96,7 +96,7 @@ var gstc, state; // helper functions
       var _data;
 
       var config = {
-        licenseKey: '====BEGIN LICENSE KEY====\\nRNjpnrMuOuCiyRKqHOVj9VTarCrnQ5z1I4J5PC2qcZVsKprng5uI8ILgvcp6zpHRD/Nrwb2mwHYzM/+kPdc3eGCjk0niPuJTyNWg/vCzew7yFTStdmozI2hRHY2e1o6WjMVDTqEr+4XxJNBNqP7yjgQh3QRSSoxh8exl/4tDeqft7pNGDvZ1N4hViu/ezMLKmLeQQ2Y5Z9gN/dAFr8ZZ4KmYJmNVnALDGaLAfsfMmtxKOqi/c1t0h5nASsQwOzOu3Sds+9DkZkw7KT4FlPkKg/4rd4AJb61LOwrJDB12S2kjuvngUXjh60dWN3l89ppCW1aARZu9oW2pByVO7mMfnw==||U2FsdGVkX1/mS21580EF6IsU+yBS2hhptTfeTiKVWzulGVWyyOalRVnx40BJw4UgoJ3wkeC/tddPMtZv0sCxtqvjV7fTTjTjaThVxjtHvgc=\\nimRcDgUtCZKCSUWpMdkbIhSiFscabmfIZ6Rg/4KaTLDkTXpIJmEe1F3taLdRQZrK91rucgGUZ33g5wsB1SwSvZnmnCF1qiviDiAXiz9UPFhJy8Psy6cNq/FdkSgWCwshJhzyT87uZS+hNiXt1EwlM01+XT8x9BzxM3bxJiW2x+wY1bzl6akBPdeEVlEhaq7dGxEGCUuX3fGD8s+EYM+9oR27z1FliXb6LaRiuSYhBoMShphuI2vC8LuyLvoReK02/dtS7gkEbXZPEIZ+QgtLH2nn+Iev7Vdk0yjsIssap/jEKW9rvfls/kA9XfTevBvW8sx7RZKkaaQR16oLgkBcWQ==\\n====END LICENSE KEY====',
+        licenseKey: '====BEGIN LICENSE KEY====\nbkeOTB+PCR4V4ggNu8RDjYoYms8s/efAL8EhzNT09JhV/bQmnC3TtM1pUYU/0AzX+Cmko74QA6Ns0z1YrsqdeD4YANFFcGx19Mft2eZGJuMArAzQen+d8BNmyaaOiV9EVyG5d4JdjQg9X2R3CF2aAIHZMHZPL0QJkvaoOON8k9kYqlzE8VrVs4jFHRDVzJxBzbhpiAyDjbjI10Cg8ruiECZ8Y9WrYIxwUy5SQJVHdeFXvvkZoFSV3TEBN8kbCtKFsSBsdHrvL76eHAyCjiaNvTEbJO0HXBmaoAiRyGLSp2R+Ph4RFC+wykJwppCW3I31ngY/IVbY1hlNLaSMYYXgFA==||U2FsdGVkX1+qPJ8QxuVG7+4E02YkY2+3cqWpVphD2EKt4Dw73RIiuGZxQCPsp9xPoqxBUjAsVrXuQYX8OsYPdAt4mt8QVrMwP5shxTMq36o=\nib1IfCHGyJnidw0G4kqnfBYXUbj8wx0W4JvDzfsyhYHVa7Rb0Y2Bj+k953HWdL6Wxhj3gdswMXvIy7XPgDpmKudyrTg1+iP4OeFXMVwt60vMhWt65E3aLwjNyqsgiEO0S9Ap9Tl1rWHsNfj6qGTgvLlOoMS1zMZ8ueiwZreuGn7yprbPu+7h49OmUyajS0Vyh2WuA0am69xr82MEcntLcd7M/EyqBcd5eSxxhLXIVHYPkbaIG8+RS4RV6YIpIqvE41O8jTHU19xrBlie09sXWYzxpB15c0OqlVBv6l8HkCDHRu6LQbCT1gUI4hQ+55+7s1PhiVwLRt7f+UTrhNuhZA==\n====END LICENSE KEY====',
         plugins: [(0,gantt_schedule_timeline_calendar_dist_plugins_timeline_pointer_esm_min_js__WEBPACK_IMPORTED_MODULE_1__.Plugin)(), (0,gantt_schedule_timeline_calendar_dist_plugins_selection_esm_min_js__WEBPACK_IMPORTED_MODULE_2__.Plugin)(), (0,gantt_schedule_timeline_calendar_dist_plugins_item_resizing_esm_min_js__WEBPACK_IMPORTED_MODULE_3__.Plugin)(), (0,gantt_schedule_timeline_calendar_dist_plugins_item_movement_esm_min_js__WEBPACK_IMPORTED_MODULE_4__.Plugin)()],
         list: {
           columns: {
@@ -183,7 +183,7 @@ var gstc, state; // helper functions
   computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_6__.mapGetters)(['getAllRoomsAdmin', 'getBookingData'])),
   created: function created() {
     this.fetchAllRooms();
-    this.getMainTableData();
+    this.getMainTableData({});
   }
 });
 

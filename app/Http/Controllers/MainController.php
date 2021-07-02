@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\Guest;
 use App\Models\Room;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class MainController extends Controller
 {
@@ -20,6 +21,7 @@ class MainController extends Controller
         $data = $request->all();
 
         if (isset($data['dateStart']) && isset($data['dateEnd'])){
+
             //находим занятые номера на текущие даты и исключаем из выдачи
             $booking = Booking::where('date_start', '<', $data['dateStart'])
                         ->where('date_end', '>', $data['dateStart'])
@@ -34,11 +36,15 @@ class MainController extends Controller
             };
 
             $rooms = Room::whereNotIn('id', $except)
+                    ->with('galleryImages')
                     ->where('amount_guests', '>=', $data['guestAmount'])
                     ->get()
                     ->groupBy('comfort_level');
         } else {
-            $rooms = Room::get()->groupBy('comfort_level');
+            /*$rooms = Room::get()->groupBy('comfort_level');*/
+            throw ValidationException::withMessages([
+                'bookingFail' => ['Нет дат'],
+            ]);
         }
 
         return response()->json($rooms,  200);

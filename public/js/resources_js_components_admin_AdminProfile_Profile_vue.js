@@ -153,6 +153,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         _this.snackbar = true;
         _this.color = 'teal';
         _this.text = 'Данные изменены!';
+        _this.errors = [];
       })["catch"](function (errors) {
         _this.errors = errors.response.data.errors;
         _this.text = 'Ошибка при изменении данных';

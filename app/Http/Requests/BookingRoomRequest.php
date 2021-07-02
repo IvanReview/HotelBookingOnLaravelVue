@@ -21,18 +21,18 @@ class BookingRoomRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'name'          => 'required|string|min:3',
             'surname'       => 'required|string|min:3',
-            'phone'         => 'required|numeric',
+            'phone'         => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
             'email'         => 'sometimes|nullable|email',
             'passport'      => 'required|numeric',
         ];
     }
 
-    public function attributes()
+    public function attributes(): array
     {
         return [
             'name'       => 'Имя',
@@ -44,11 +44,11 @@ class BookingRoomRequest extends FormRequest
         ];
     }
 
-    public function messages()
+    public function messages(): array
     {
         return [
             'required'     =>  'Поле :attribute обязательно для заполнения',
-            'min'          =>  'Поле :attribute должно иметь минимум :min символа',
+            'min'          =>  'Поле :attribute должно иметь минимум :min символов',
             'unique'       =>  'Поле :attribute должно быть уникальным',
             'numeric'      =>  'Поле :attribute должно быть числом',
         ];
