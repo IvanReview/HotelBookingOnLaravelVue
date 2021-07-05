@@ -54,7 +54,7 @@
 
                 <v-divider></v-divider>
 
-                <router-link to='/admin/schedule' class="menu-item">
+                <!--<router-link to='/admin/schedule' class="menu-item">
                     <v-list-item style="font-size: 5em">
                         <v-list-item-icon>
                             <v-icon>mdi-table-large</v-icon>
@@ -63,7 +63,7 @@
                             Главное расписание(тест)
                         </v-list-item-title>
                     </v-list-item>
-                </router-link>
+                </router-link>-->
 
                 <v-divider></v-divider>
 

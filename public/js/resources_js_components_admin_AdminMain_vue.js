@@ -1061,32 +1061,6 @@ var render = function() {
               _vm._v(" "),
               _c("v-divider"),
               _vm._v(" "),
-              _c(
-                "router-link",
-                { staticClass: "menu-item", attrs: { to: "/admin/schedule" } },
-                [
-                  _c(
-                    "v-list-item",
-                    { staticStyle: { "font-size": "5em" } },
-                    [
-                      _c(
-                        "v-list-item-icon",
-                        [_c("v-icon", [_vm._v("mdi-table-large")])],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c("v-list-item-title", [
-                        _vm._v(
-                          "\n                        Главное расписание(тест)\n                    "
-                        )
-                      ])
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _vm._v(" "),
               _c("v-divider"),
               _vm._v(" "),
               _c(
