@@ -76,7 +76,7 @@ export default {
                 })
         },
 
-        //получить комнаты
+        //получить комнаты(для диаграммы Ганта)
         fetchAllRooms({commit}) {
 
             return axios.get(`/api/auth/rooms-all`)

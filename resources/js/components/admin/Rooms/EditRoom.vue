@@ -114,11 +114,11 @@
 
                                         <v-col
                                             v-else
-                                            v-for="image in room_data.gallery_images"
+                                            v-for="(image, index) in room_data.gallery_images"
                                             :key="image.id"
                                             class="d-flex child-flex"
                                             cols="4"
-                                            @click="deleteDisplayOldImage"
+                                            @click="deleteDisplayOldImage(index)"
 
                                         >
                                             <img :src="`/storage/${image.name}`"
@@ -207,7 +207,7 @@ export default {
         ...mapActions([
             'updateRoomInBd'
         ]),
-        //показать изображения галлереи после загрузки
+        //показать изображения галереи после загрузки
         attachImageUpdateRoomGallery() {
 
             let files = this.$refs.updateRoomsGalleryImage.$refs.input.files
@@ -240,7 +240,7 @@ export default {
             }
         },
 
-        //непосредственно отображение изображения галлереи
+        //непосредственно отображение изображения галереи
         showImageGallery(file, container) {
             let reader = new FileReader()
 
@@ -276,8 +276,8 @@ export default {
         },
 
         //удалить старое изображение по клику
-        deleteDisplayOldImage(elemId, container=false){
-
+        deleteDisplayOldImage(elemId, container = false){
+            console.log(elemId)
             this.room_data.gallery_images.splice(elemId, 1)
         },
 
@@ -348,7 +348,7 @@ export default {
                         }
                         this.snackbar = true
                         this.color = 'red'
-                        this.text = "Заолните правильно поля формы"
+                        this.text = "Заполните правильно поля формы"
                     }
                 })
 

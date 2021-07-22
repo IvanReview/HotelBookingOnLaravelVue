@@ -563,7 +563,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   watch: {},
   computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)(['getRoomEditErrors'])),
   methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)(['updateRoomInBd'])), {}, {
-    //показать изображения галлереи после загрузки
+    //показать изображения галереи после загрузки
     attachImageUpdateRoomGallery: function attachImageUpdateRoomGallery() {
       var files = this.$refs.updateRoomsGalleryImage.$refs.input.files;
       var parentContainer = this.$refs.gallery_container_edit;
@@ -588,7 +588,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }
       }
     },
-    //непосредственно отображение изображения галлереи
+    //непосредственно отображение изображения галереи
     showImageGallery: function showImageGallery(file, container) {
       var reader = new FileReader(); //содержимое контейнера удаляем
 
@@ -617,6 +617,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     //удалить старое изображение по клику
     deleteDisplayOldImage: function deleteDisplayOldImage(elemId) {
       var container = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      console.log(elemId);
       this.room_data.gallery_images.splice(elemId, 1);
     },
     //Добавить Изображение методом перетаскивания
@@ -690,7 +691,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
           _this2.snackbar = true;
           _this2.color = 'red';
-          _this2.text = "Заолните правильно поля формы";
+          _this2.text = "Заполните правильно поля формы";
         }
       });
     },
@@ -2500,7 +2501,7 @@ var render = function() {
                                           )
                                         : _vm._l(
                                             _vm.room_data.gallery_images,
-                                            function(image) {
+                                            function(image, index) {
                                               return _c(
                                                 "v-col",
                                                 {
@@ -2509,8 +2510,11 @@ var render = function() {
                                                     "d-flex child-flex",
                                                   attrs: { cols: "4" },
                                                   on: {
-                                                    click:
-                                                      _vm.deleteDisplayOldImage
+                                                    click: function($event) {
+                                                      return _vm.deleteDisplayOldImage(
+                                                        index
+                                                      )
+                                                    }
                                                   }
                                                 },
                                                 [

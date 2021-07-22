@@ -7,6 +7,7 @@ use App\Http\Requests\CreateRoomRequest;
 use App\Http\Requests\UpdateRoomRequest;
 use App\Models\Gallery;
 use App\Models\Room;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -34,7 +35,7 @@ class RoomsController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getAllRooms(Request $request): \Illuminate\Http\JsonResponse
+    public function getAllRooms(Request $request): JsonResponse
     {
         $rooms = Room::get();
 
