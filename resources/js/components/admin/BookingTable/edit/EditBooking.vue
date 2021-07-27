@@ -276,7 +276,9 @@ export default {
             formData.append('surname', this.booking_edit.guest.surname)
             /*formData.append('email', this.booking_edit.guest.email)*/
             formData.append('phone', this.booking_edit.guest.phone)
-            formData.append('passport', this.booking_edit.guest.passport)
+            if(this.booking_edit.guest.passport){
+                formData.append('passport', this.booking_edit.guest.passport)
+            }
             formData.append('room_id', this.booking_edit.room.id)
             formData.append('guest_id', this.booking_edit.guest.id)
             formData.append('date_start', this.booking_edit.date_start)
